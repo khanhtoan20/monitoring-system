@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b719cbe4-2846-4809-aa35-228517a1bec5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/monitoring-system.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../admin/json-20200518.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/json-20200518.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/main/java/C1.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/main/java/Client.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/main/java/utils/Environment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/main/java/utils/Executable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/main/java/utils/Handler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/target/classes/C1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/target/classes/Client.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/target/classes/utils/Executable.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/target/classes/utils/Handler.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/json-20200518.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/src/main/java/Server/Server.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/src/main/java/models/Client.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/src/main/java/models/ClientSocketModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/src/main/java/models/SocketModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/src/main/java/models/Test.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server.bak/src/main/java/utils/Environment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/json-20200518.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/models/ClientSocketModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/models/SocketModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/Environment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/models/ClientSocketModel.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/models/SocketModel.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/models/Test.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/server/Server.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/utils/Environment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/org/example/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/target/classes/org/example/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Main.class" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2G1Ti3Kn5SToadKFF09XDzttbh0" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "D:/Workspace/Java/monitoring-system/server",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="server" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Server">
+    <configuration name="AdminSocketModel" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="models.AdminSocketModel" />
+      <module name="server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="models.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Controller" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="utils.Controller" />
+      <module name="server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Database" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="utils.Database" />
+      <module name="server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="server.Server" />
+      <module name="server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="server.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Server" />
+        <item itemvalue="Application.Database" />
+        <item itemvalue="Application.Controller" />
+        <item itemvalue="Application.AdminSocketModel" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b719cbe4-2846-4809-aa35-228517a1bec5" name="Changes" comment="" />
+      <created>1665555215833</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1665555215833</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
