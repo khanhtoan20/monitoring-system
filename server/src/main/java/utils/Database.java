@@ -17,9 +17,7 @@ public class Database {
     }
 
     /**
-     * main
-     *
-     * @author viettuts.vn
+     * count
      * @param tableName
      */
     public static Integer count(String tableName, String where) {
@@ -42,8 +40,7 @@ public class Database {
      * @param password: password is used to login
      * @return connection
      */
-    public static Connection getConnection(String dbURL, String userName,
-                                           String password) {
+    public static Connection getConnection(String dbURL, String userName, String password) {
         Connection conn = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -52,9 +49,11 @@ public class Database {
         } catch (Exception ex) {
             System.out.println("connect failure!");
             ex.printStackTrace();
+            return null;
         }
         return conn;
     }
+
     public static void println(String message) {
         System.out.println("[DATABASE] " + message);
     }

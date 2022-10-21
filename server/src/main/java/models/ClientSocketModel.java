@@ -1,30 +1,42 @@
 package models;
 
 import controllers.Controller;
-import org.json.JSONObject;
 import server.Server;
-import utils.Database;
-import utils.Executable;
+import utils.Helper;
+import utils.JSON;
+import utils.console;
+
 import java.io.IOException;
 import java.net.Socket;
-import java.util.UUID;
-import static utils.Helper.getMd5;
+
+import static utils.Command.COMMAND;
+import static utils.Environment.DEFAULT_SERVER_HOST;
+import static utils.Environment.SOCKET_MODEL_ID;
 
 public class ClientSocketModel extends SocketModel {
+    private String ram;
+    private String cpu;
+    private String disk;
 
     public ClientSocketModel(Socket socket) {
+        this.uuid = Helper.getRandomUUID();
+        this.socket = socket;
+    }
+
+    @Override
+    public String onConsume() {
         try {
-            this.uuid = UUID.randomUUID().toString();
-            this.socket = socket;
+            return this.inputStream.readLine();
         } catch (Exception e) {
-            println("Failure to initialize, exception =" + e.getMessage());
+            console.error(this.getStackTrace(e));
+            return null;
         }
     }
 
     @Override
     public void onStart() {
-        this.getInputStream();
-        this.getOutputStream();
+        this.initInputStream();
+        this.initOutputStream();
 
         String input;
 
@@ -37,20 +49,14 @@ public class ClientSocketModel extends SocketModel {
     }
 
     @Override
-    public String onConsume() {
+    public void onHandle(String message) {
         try {
-            String temp = this.inputStream.readLine();
-            println(temp);
-            return temp;
+            JSON json = new JSON(message).put(SOCKET_MODEL_ID, this.uuid);
+            Controller.get(json.get(COMMAND)).execute(json, this);
         } catch (Exception e) {
-//            e.printStackTrace();
-            return null;
+            console.error(this.getStackTrace(e));
+            this.onSend(new MessageModel(DEFAULT_SERVER_HOST, uuid, e.getMessage()).json());
         }
-    }
-
-    @Override
-    public String getUUID() {
-        return this.uuid;
     }
 
     @Override
@@ -58,53 +64,45 @@ public class ClientSocketModel extends SocketModel {
         try {
             this.outputStream.writeBytes(message + "\n");
         } catch (IOException e) {
-            println("Failure to send, exception =" + e.getMessage());
+            console.error(this.getStackTrace(e));
         }
     }
 
     @Override
     public void onStop() {
         try {
-            println("Connection is closing...., uuid = " + this.uuid);
-            // we might need to submit a logout demand before closing a connection.
+            console.log("Connection is closing...., UUID: " + this.uuid);
+            Server.getClientConnections().remove(this.getUUID());
             this.inputStream.close();
             this.outputStream.close();
             this.socket.close();
-            Server.getClientConnections().remove(this.getUUID());
             Thread.currentThread().stop();
         } catch (Exception e) {
-            println("Failure to close connection uuid = " + this.uuid + ", exception = " + e.getMessage());
+            console.error("Failure to close connection uuid: " + this.uuid + ", exception: " + e.getMessage());
         }
     }
 
-    @Override
-    public void println(String message) {
-        System.out.println("[" + Thread.currentThread().getName() + "][ClientSocketModel] " + message);
+    public void setCpu(String cpu) {
+        this.cpu = cpu;
     }
 
-    private String isAuthorized(Object input) {
-        JSONObject temp = (JSONObject) input;
-        String username = temp.get("username").toString();
-        String password = getMd5(temp.get("password").toString());
-        Integer count = Database.count("administrators", "username=" + username + " AND password=" +password);
-
-        if (count == null || count == 0 ) {
-            return "login failed";
-        }
-
-        return "login successfully";
+    public void setRam(String ram) {
+        this.ram = ram;
     }
 
-    private void onHandle(String input) {
-        JSONObject json;
-        String command;
-        try {
-            json = new JSONObject(input);
-            command = json.get("command").toString();
-            Executable executor = Controller.get(command);
-            this.onSend(executor.execute(json));
-        } catch (Exception e) {
-            this.onSend(e.getMessage());
-        }
+    public void setDisk(String disk) {
+        this.disk = disk;
+    }
+
+    public String getRam() {
+        return ram;
+    }
+
+    public String getCpu() {
+        return cpu;
+    }
+
+    public String getDisk() {
+        return disk;
     }
 }

@@ -1,6 +1,11 @@
 package models;
 
-import java.io.*;
+import utils.Helper;
+import utils.console;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 public abstract class SocketModel implements Runnable {
@@ -9,21 +14,19 @@ public abstract class SocketModel implements Runnable {
     protected BufferedReader inputStream;
     protected DataOutputStream outputStream;
 
-    public BufferedReader getInputStream() {
+    public void initInputStream() {
         try {
-            return this.inputStream == null ? this.inputStream = new BufferedReader(new InputStreamReader(this.socket.getInputStream())) : this.inputStream;
+            this.inputStream = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            console.error(this.getStackTrace(e));
         }
     }
 
-    public DataOutputStream getOutputStream() {
+    public void initOutputStream() {
         try {
-            return this.outputStream == null ? this.outputStream = new DataOutputStream(this.socket.getOutputStream()) : this.outputStream;
+            this.outputStream = new DataOutputStream(this.socket.getOutputStream());
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            console.error(this.getStackTrace(e));
         }
     }
 
@@ -32,24 +35,21 @@ public abstract class SocketModel implements Runnable {
         onStart();
     }
 
-    /**
-     * Each concrete model might have different behavior, so I decide to use the factory pattern method to get more flexible
-     */
     public abstract void onStart();
+
+    public abstract void onStop();
+
     public abstract void onSend(String message);
+
+    public abstract void onHandle(String message);
+
     public abstract String onConsume();
 
-    public void onStop() {
-        try {
-            println("Connection is closing...., uuid = " + this.uuid);
-            // we might need to submit a logout demand before closing a connection.
-            this.inputStream.close();
-            this.outputStream.close();
-            this.socket.close();
-        } catch (Exception e) {
-            println("Failure to close connection uuid = " + this.uuid + ", exception = " + e.getMessage());
-        }
+    public String getUUID() {
+        return this.uuid;
     }
-    public abstract String getUUID();
-    public abstract void println(String message);
+
+    protected String getStackTrace(Exception exception) {
+        return Helper.getStackTrace(this.getClass()) + exception.getMessage();
+    }
 }

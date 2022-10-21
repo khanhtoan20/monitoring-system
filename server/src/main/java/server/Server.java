@@ -2,11 +2,12 @@ package server;
 
 import controllers.Controller;
 import models.ClientSocketModel;
-import models.SocketModel;
+import utils.Helper;
+import utils.console;
 
-import java.io.*;
-import java.net.Socket;
+import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,35 +15,43 @@ import static utils.Environment.DEFAULT_SERVER_PORT;
 
 public class Server {
     private static ClientSocketModel host;
-    private static Map<String, SocketModel> clientConnections = new ConcurrentHashMap<>();
+    private static Map<String, ClientSocketModel> clientConnections = new ConcurrentHashMap<>();
 
     public Server() {
         Controller.init();
+//        AdminController.init();
     }
+
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(DEFAULT_SERVER_PORT)) {
-            println("Server is listening on port " + DEFAULT_SERVER_PORT);
-            println("Waiting for host...");
-
+            console.info("Server is listening on port: " + DEFAULT_SERVER_PORT);
             while (true) {
                 Socket socket = serverSocket.accept();
-                println("New client joined");
                 ClientSocketModel newUser = new ClientSocketModel(socket);
                 clientConnections.put(newUser.getUUID(), newUser);
+                console.info("Client[" + newUser.getUUID() + "] has joined");
                 new Thread(newUser).start();
             }
         } catch (IOException ex) {
-            println("Error in the server: " + ex.getMessage());
-            ex.printStackTrace();
+            console.error(this.getStackTrace(ex));
         }
     }
 
-    public static Map<String, SocketModel> getClientConnections() {
+    public static void setHost(String uuid) {
+        host = clientConnections.get(uuid);
+        clientConnections.remove(uuid);
+    }
+
+    public static ClientSocketModel getHost() {
+        return host;
+    }
+
+    public static Map<String, ClientSocketModel> getClientConnections() {
         return clientConnections;
     }
 
-    public void println(String message) {
-        System.out.println("[SERVER] " + message);
+    private String getStackTrace(Exception exception) {
+        return Helper.getStackTrace(this.getClass()) + exception.getMessage();
     }
 
     public static void main(String[] args) {
