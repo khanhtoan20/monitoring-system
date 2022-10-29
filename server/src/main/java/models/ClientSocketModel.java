@@ -17,6 +17,7 @@ public class ClientSocketModel extends SocketModel {
     private String ram;
     private String cpu;
     private String disk;
+    private String ip;
 
     public ClientSocketModel(Socket socket) {
         this.uuid = Helper.getRandomUUID();
@@ -28,7 +29,8 @@ public class ClientSocketModel extends SocketModel {
         try {
             return this.inputStream.readLine();
         } catch (Exception e) {
-            console.error(this.getStackTrace(e));
+            if (e.getMessage().contains("Connection reset")) return null;
+            e.printStackTrace();
             return null;
         }
     }
@@ -54,7 +56,7 @@ public class ClientSocketModel extends SocketModel {
             JSON json = new JSON(message).put(SOCKET_MODEL_ID, this.uuid);
             Controller.get(json.get(COMMAND)).execute(json, this);
         } catch (Exception e) {
-            console.error(this.getStackTrace(e));
+            e.printStackTrace();
             this.onSend(new MessageModel(DEFAULT_SERVER_HOST, uuid, e.getMessage()).json());
         }
     }
@@ -64,7 +66,7 @@ public class ClientSocketModel extends SocketModel {
         try {
             this.outputStream.writeBytes(message + "\n");
         } catch (IOException e) {
-            console.error(this.getStackTrace(e));
+            e.printStackTrace();
         }
     }
 
@@ -104,5 +106,13 @@ public class ClientSocketModel extends SocketModel {
 
     public String getDisk() {
         return disk;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 }

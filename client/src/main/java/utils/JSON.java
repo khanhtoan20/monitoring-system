@@ -9,6 +9,10 @@ public class JSON extends JSONObject {
         super(message);
     }
 
+    public JSON(Object message) {
+        super(message);
+    }
+
     public JSON() {
         super();
     }

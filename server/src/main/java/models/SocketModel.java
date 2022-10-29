@@ -18,7 +18,7 @@ public abstract class SocketModel implements Runnable {
         try {
             this.inputStream = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         } catch (Exception e) {
-            console.error(this.getStackTrace(e));
+            e.printStackTrace();
         }
     }
 
@@ -26,7 +26,7 @@ public abstract class SocketModel implements Runnable {
         try {
             this.outputStream = new DataOutputStream(this.socket.getOutputStream());
         } catch (Exception e) {
-            console.error(this.getStackTrace(e));
+            e.printStackTrace();
         }
     }
 
@@ -47,9 +47,5 @@ public abstract class SocketModel implements Runnable {
 
     public String getUUID() {
         return this.uuid;
-    }
-
-    protected String getStackTrace(Exception exception) {
-        return Helper.getStackTrace(this.getClass()) + exception.getMessage();
     }
 }

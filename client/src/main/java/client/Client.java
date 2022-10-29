@@ -2,7 +2,6 @@ package client;
 
 import controllers.Controller;
 import controllers.Executable;
-import utils.Helper;
 import utils.JSON;
 import utils.console;
 
@@ -12,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import static utils.Command.COMMAND_CLIENT_SYSTEM_INFO;
 import static utils.Environment.DEFAULT_SERVER_HOST;
 import static utils.Environment.DEFAULT_SERVER_PORT;
 
@@ -42,35 +42,37 @@ public class Client {
             this.getInputStream();
             this.getOutputStream();
 
+            this.onSend(Controller.get(COMMAND_CLIENT_SYSTEM_INFO).execute(null));
+
             while ((input = this.inputStream.readLine()) != null) {
                 this.onHandle(input);
             }
 
         } catch (Exception e) {
-            console.error(this.getStackTrace(e));
+            e.printStackTrace();
         }
     }
 
     public void onHandle(String message) {
+        JSON json;
         try {
-            JSON json = new JSON(message);
+            console.log(message);
+            json = new JSON(message);
+            console.log(json.toString());
             Executable executor = Controller.get(json.get("command"));
             this.onSend(executor.execute(json));
         } catch (Exception e) {
-            console.error(this.getStackTrace(e));
+            e.printStackTrace();
         }
     }
 
     public void onSend(String message) {
         try {
+            console.log(message);
             this.outputStream.writeBytes(message + "\n");
         } catch (IOException e) {
-            console.error(this.getStackTrace(e));
+            e.printStackTrace();
         }
-    }
-
-    protected String getStackTrace(Exception exception) {
-        return Helper.getStackTrace(this.getClass()) + exception.getMessage();
     }
 
     public static void main(String[] args) {

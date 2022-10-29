@@ -9,5 +9,8 @@
         <module name="admin" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="admin" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
