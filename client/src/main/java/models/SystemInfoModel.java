@@ -85,8 +85,9 @@ public class SystemInfoModel {
 
     public String getClipboard() {
         try {
-            return Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.getTextPlainUnicodeFlavor()).toString();
+            return Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor).toString();
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

@@ -9,7 +9,6 @@ import utils.console;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.Adler32;
 
 import static utils.Command.*;
 import static utils.Command.COMMAND_MONITORING;

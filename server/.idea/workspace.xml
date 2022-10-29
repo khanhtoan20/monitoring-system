@@ -5,87 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b719cbe4-2846-4809-aa35-228517a1bec5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../admin/admin.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/DashboardGUI.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/DashboardGUI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/table/HoverIndex.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/table/TableCustom.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/table/TableCustomCellRender.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/table/TableHeaderCustomCellRender.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/table/TableScrollButton.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/table/TextAreaCellRenderer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/table/up.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/.idea/uiDesigner.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/.idea/uiDesigner.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/GUI/DashboardGUI.form" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/GUI/DashboardGUI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/admin/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/admin/Admin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/controllers/ConsumeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/controllers/ConsumeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/controllers/ConsumeExecutable.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/controllers/base/ConsumeExecutable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/controllers/ProduceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/controllers/ProduceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/controllers/ProduceExecutable.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/controllers/base/ProduceExecutable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/models/MessageModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/models/MessageModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/models/SystemInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/models/SystemInfoModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/utils/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/utils/Command.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/utils/Environment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/utils/Environment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/utils/Helper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/utils/Helper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/utils/JSON.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/utils/JSON.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/java/utils/console.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/utils/console.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/GUI/main$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/GUI/main$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/GUI/main$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/GUI/main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/admin/Admin.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/admin/Admin.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/controllers/ConsumeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/controllers/ConsumeController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/controllers/ConsumeExecutable.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/controllers/Controller.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/controllers/Executable.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/models/MessageModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/models/MessageModel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/models/SystemInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/tem/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/utils/Command.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/utils/Command.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/utils/Environment.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/utils/Environment.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/utils/JSON.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/utils/JSON.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/utils/console.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/utils/console.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/client/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/controllers/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/controllers/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/utils/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/utils/Command.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/utils/Environment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/utils/Environment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/utils/Helper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/utils/Helper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/utils/JSON.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/utils/JSON.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/target/classes/client/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/client/Client.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/target/classes/controllers/Controller.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/controllers/Controller.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/target/classes/controllers/Executable.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/controllers/Executable.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/target/classes/models/MessageModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/models/MessageModel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/target/classes/utils/Command.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/utils/Command.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/target/classes/utils/Environment.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/utils/Environment.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/target/classes/utils/JSON.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/utils/JSON.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/target/classes/utils/console.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/utils/console.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/models/SystemInfoModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/models/SystemInfoModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/target/classes/models/SystemInfoModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/models/SystemInfoModel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controllers/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/ClientSocketModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/ClientSocketModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/SocketModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/SocketModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Command.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/JSON.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/JSON.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/controllers/Controller.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controllers/Controller.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/ClientSocketModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/ClientSocketModel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/SocketModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/SocketModel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/server/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/server/Server.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Command.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/utils/Command.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Database.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/utils/Database.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Helper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/utils/Helper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/JSON.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/utils/JSON.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
