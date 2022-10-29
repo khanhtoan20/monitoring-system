@@ -2,7 +2,6 @@ package controllers;
 
 import models.MessageModel;
 import models.SystemInfoModel;
-import org.json.JSONArray;
 import utils.Helper;
 import utils.JSON;
 
@@ -12,7 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static utils.Command.*;
-import static utils.Command.COMMAND_KEYLOGGER;
 import static utils.Environment.DEFAULT_FROM;
 import static utils.Environment.DEFAULT_SERVER_HOST;
 
@@ -101,19 +99,6 @@ public class Controller {
 
     public static Executable put(String key, Executable<JSON> value) {
         return controller.put(key, value);
-    }
-
-//    public static void main(String[] args) {
-//        new Controller().getPercentCpuUsage();
-//    }
-
-    private static String processDetails(ProcessHandle process) {
-        return String.format("%8d %8s %10s %26s %-40s",
-                process.pid(),
-                text(process.parent().map(ProcessHandle::pid)),
-                text(process.info().user()),
-                text(process.info().startInstant()),
-                text(process.info().commandLine()));
     }
 
     private static String text(Optional<?> optional) {

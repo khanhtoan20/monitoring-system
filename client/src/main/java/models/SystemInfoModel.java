@@ -8,24 +8,44 @@ import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 
 public class SystemInfoModel {
     private OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
     private static final String WMIC_CPU_GET_LOAD_PERCENTAGE = "wmic cpu get loadPercentage";
+    private static final String SYSTEM_PROPERTY_OS_NAME = "os.name";
+    private static final String PHYSIC_MEMORY_UNIT = "GB";
+    private static final String UNKNOWN = "Unknown";
     private static final Integer GB = 1073741824;
 
-    private String ram;
-    private String cpu;
-    private String disk;
-    private String os;
-    private String ip;
+    public String ram;
+    public String cpu;
+    public String disk;
+    public String os;
+    public String ip;
+    public String MAC_address;
+    public String hostName;
 
     public SystemInfoModel() {
+        this.initSystemInfo();
+    }
+
+    private void initSystemInfo() {
         this.os = this.initOS();
         this.ip = this.initIP();
         this.cpu = this.initCPU();
         this.ram = this.initRAM();
         this.disk = this.initDISK();
+        this.hostName = this.initHostName();
+        this.MAC_address = this.initMACAddress();
+    }
+
+    private  String initHostName() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (Exception e) {
+            return UNKNOWN;
+        }
     }
 
     private String initDISK() {
@@ -37,11 +57,11 @@ public class SystemInfoModel {
     }
 
     private String initOS() {
-        return System.getProperty("os.name");
+        return System.getProperty(SYSTEM_PROPERTY_OS_NAME);
     }
 
     private String initRAM() {
-        return (osBean.getTotalPhysicalMemorySize() / GB) + "GB";
+        return (osBean.getTotalPhysicalMemorySize() / GB) + PHYSIC_MEMORY_UNIT;
     }
 
     private String initCPU() {
@@ -57,7 +77,20 @@ public class SystemInfoModel {
         try {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (Exception e) {
-            return "NaN";
+            return UNKNOWN;
+        }
+    }
+
+    private String initMACAddress() {
+        try {
+            byte[] hardwareAddress = NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress();
+            String[] hexadecimalFormat = new String[hardwareAddress.length];
+            for (int i = 0; i < hardwareAddress.length; i++) {
+                hexadecimalFormat[i] = String.format("%02X", hardwareAddress[i]);
+            }
+            return String.join("-", hexadecimalFormat);
+        } catch (Exception e) {
+            return UNKNOWN;
         }
     }
 
@@ -88,7 +121,7 @@ public class SystemInfoModel {
             return Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor).toString();
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return UNKNOWN;
         }
     }
 
@@ -110,5 +143,13 @@ public class SystemInfoModel {
 
     public String getIp() {
         return ip;
+    }
+
+    public String getMAC_address() {
+        return MAC_address;
+    }
+
+    public String getHostName() {
+        return hostName;
     }
 }

@@ -3,6 +3,7 @@ package controllers;
 import models.ClientSocketModel;
 import models.MessageModel;
 import models.SocketModel;
+import models.SystemInfoModel;
 import server.Server;
 import utils.JSON;
 import utils.console;
@@ -63,10 +64,13 @@ public class Controller {
         String uuid = model.getUUID();
         ClientSocketModel client = Server.getClientConnections().get(uuid);
         JSON result = new JSON(json.get("result"));
-        client.setIp(result.get("ip"));
         client.setRam(result.get("ram"));
-        client.setCpu(result.get("cpu"));
+        client.setCpu(result.get("ram"));
         client.setDisk(result.get("disk"));
+        client.setOs(result.get("os"));
+        client.setIp(result.get("ip"));
+        client.setMAC_address(result.get("MAC_address"));
+        client.setHostName(result.get("hostName"));
         console.log("Client[" + uuid + "] updated system info!");
     }
 

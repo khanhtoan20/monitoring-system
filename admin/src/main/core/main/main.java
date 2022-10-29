@@ -12,7 +12,7 @@ public class main {
             public void run() {
                 try {
                     new DashboardGUI().setVisible(true);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }

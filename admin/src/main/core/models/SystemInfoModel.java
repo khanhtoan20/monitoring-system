@@ -1,96 +1,79 @@
 package models;
 
+import com.sun.management.OperatingSystemMXBean;
 import utils.Helper;
-import utils.console;
 
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
-import java.util.Arrays;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Vector;
 
 public class SystemInfoModel {
-    private String ram;
-    private String cpu;
-    private String disk;
-    private String os;
+    private static final String UNKNOWN = "Unknown";
+    public String ram;
+    public String cpu;
+    public String disk;
+    public String os;
+    public String ip;
+    public String MAC_address;
+    public String hostName;
+
+    public SystemInfoModel(Object... vector) {
+        this.os = vector[1] != null ? vector[1].toString() : UNKNOWN;
+        this.ip = vector[2] != null ? vector[2].toString() : UNKNOWN;
+        this.ram = vector[3] != null ? vector[3].toString() : UNKNOWN;
+        this.cpu = vector[4] != null ? vector[4].toString() : UNKNOWN;
+        this.disk = vector[5] != null ? vector[5].toString() : UNKNOWN;
+        this.hostName = vector[6] != null ? vector[6].toString() : UNKNOWN;
+        this.MAC_address = vector[7] != null ? vector[7].toString() : UNKNOWN;
+    }
+
+    private String get(Vector<String> vector, Integer index) {
+        try {
+            return vector.get(index);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public SystemInfoModel(String ram, String cpu, String disk, String os, String ip, String MAC_address, String hostName) {
+        this.os = os != null ? os : UNKNOWN;
+        this.ip = ip != null ? ip : UNKNOWN;
+        this.ram = ram != null ? ram : UNKNOWN;
+        this.cpu = cpu != null ? cpu : UNKNOWN;
+        this.disk = disk != null ? disk : UNKNOWN;
+        this.hostName = hostName != null ? hostName : UNKNOWN;
+        this.MAC_address = MAC_address != null ? MAC_address : UNKNOWN;
+    }
 
     public String getRam() {
         return ram;
-    }
-
-    public void setRam(String ram) {
-        this.ram = ram;
     }
 
     public String getCpu() {
         return cpu;
     }
 
-    public void setCpu(String cpu) {
-        this.cpu = cpu;
-    }
-
     public String getDisk() {
         return disk;
-    }
-
-    public void setDisk(String disk) {
-        this.disk = disk;
     }
 
     public String getOs() {
         return os;
     }
 
-    public void setOs(String os) {
-        this.os = os;
+    public String getIp() {
+        return ip;
     }
 
-    public SystemInfoModel() {
-        this.ram = this.initRAM();
-        this.cpu = this.initCPU();
-        this.disk = this.initDISK();
-        this.os = this.initOS();
+    public String getMAC_address() {
+        return MAC_address;
     }
 
-    private String initDISK() {
-        long diskSpace = 0;
-        for(File path : File.listRoots())
-        {
-            diskSpace += path.getTotalSpace();
-        }
-        return (diskSpace / 1073741824) + "GB";
-    }
-
-    private String initOS() {
-        return System.getProperty("os.name");
-    }
-
-    private String initRAM() {
-        com.sun.management.OperatingSystemMXBean osBean = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-        return (osBean.getTotalPhysicalMemorySize()/1073741824) + "GB";
-    }
-
-    private String initCPU() {
-        String[] cpu = {
-                System.getenv("PROCESSOR_IDENTIFIER"),
-                System.getenv("PROCESSOR_ARCHITECTURE"),
-                System.getenv("PROCESSOR_LEVEL") + " cores",
-                System.getenv("NUMBER_OF_PROCESSORS") + " threads"};
-        return Arrays.stream(cpu).reduce("", (partialString, element) -> partialString + ", " + element);
-    }
-
-    public void shutdown() {
-        try {
-            Runtime.getRuntime().exec("shutdown -s -t 0");
-            System.exit(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public static void main(String[] args) throws Exception{
-        Runtime.getRuntime().exec("shutdown -l");
+    public String getHostName() {
+        return hostName;
     }
 }

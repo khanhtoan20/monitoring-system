@@ -10,8 +10,12 @@ public class JSON extends JSONObject {
         super(message);
     }
 
-    public String get(String key) throws JSONException {
-        return super.get(key).toString();
+    public String get(String key) {
+        try {
+            return super.get(key).toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public JSON put(String key, Object value) {

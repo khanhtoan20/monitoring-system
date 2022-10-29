@@ -14,10 +14,13 @@ import static utils.Environment.DEFAULT_SERVER_HOST;
 import static utils.Environment.SOCKET_MODEL_ID;
 
 public class ClientSocketModel extends SocketModel {
-    private String ram;
-    private String cpu;
-    private String disk;
-    private String ip;
+    public String ram;
+    public String cpu;
+    public String disk;
+    public String os;
+    public String ip;
+    public String MAC_address;
+    public String hostName;
 
     public ClientSocketModel(Socket socket) {
         this.uuid = Helper.getRandomUUID();
@@ -66,6 +69,7 @@ public class ClientSocketModel extends SocketModel {
         try {
             this.outputStream.writeBytes(message + "\n");
         } catch (IOException e) {
+            if (e.getMessage().contains("Socket closed")) return;
             e.printStackTrace();
         }
     }
@@ -112,7 +116,31 @@ public class ClientSocketModel extends SocketModel {
         return ip;
     }
 
+    public String getOs() {
+        return os;
+    }
+
+    public String getMAC_address() {
+        return MAC_address;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setOs(String os) {
+        this.os = os;
+    }
+
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public void setMAC_address(String MAC_address) {
+        this.MAC_address = MAC_address;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 }

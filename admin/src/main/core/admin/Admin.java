@@ -3,9 +3,8 @@ package admin;
 import controllers.ConsumeController;
 import controllers.ProduceController;
 import controllers.base.ProduceExecutable;
-import models.ClientModel;
+import models.SystemInfoModel;
 import swing.DashboardGUI;
-import utils.Helper;
 import utils.JSON;
 import utils.console;
 
@@ -30,11 +29,11 @@ public class Admin {
     public Admin(DashboardGUI gui) {
         ProduceController.init();
         ConsumeController.init();
-        clients = new HashMap<String, ClientModel>();
+        clients = new HashMap<String, SystemInfoModel>();
         Admin.gui = gui;
     }
 
-    public HashMap<String, ClientModel> getClients() {
+    public HashMap<String, SystemInfoModel> getClients() {
         return clients;
     }
 
