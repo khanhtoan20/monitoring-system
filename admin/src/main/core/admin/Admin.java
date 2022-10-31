@@ -4,14 +4,21 @@ import controllers.ConsumeController;
 import controllers.ProduceController;
 import controllers.base.ProduceExecutable;
 import models.SystemInfoModel;
+import org.json.JSONObject;
 import swing.DashboardGUI;
 import utils.JSON;
 import utils.console;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import static utils.Command.*;
@@ -19,18 +26,22 @@ import static utils.Environment.DEFAULT_SERVER_HOST;
 import static utils.Environment.DEFAULT_SERVER_PORT;
 
 public class Admin {
+    private HashMap clients;
     private Socket connection;
     private BufferedReader scanner;
     private BufferedReader inputStream;
     private DataOutputStream outputStream;
-    private HashMap clients;
     private static DashboardGUI gui;
 
     public Admin(DashboardGUI gui) {
+        Admin.gui = gui;
         ProduceController.init();
         ConsumeController.init();
         clients = new HashMap<String, SystemInfoModel>();
-        Admin.gui = gui;
+    }
+
+    public void setClients(HashMap clients) {
+        this.clients = clients;
     }
 
     public HashMap<String, SystemInfoModel> getClients() {
@@ -79,12 +90,11 @@ public class Admin {
         }
     }
 
-    public void onConsume() {
+    public synchronized void onConsume() {
         while (true) {
             try {
                 String response = this.inputStream.readLine();
                 JSON json = new JSON(response);
-                console.log("debug" + response);
                 ConsumeController.get(json.get(COMMAND)).execute(json, this);
             } catch (Exception e) {
                 e.printStackTrace();

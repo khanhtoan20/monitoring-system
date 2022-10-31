@@ -57,6 +57,7 @@ public class ClientSocketModel extends SocketModel {
     public void onHandle(String message) {
         try {
             JSON json = new JSON(message).put(SOCKET_MODEL_ID, this.uuid);
+            console.log(json.toString());
             Controller.get(json.get(COMMAND)).execute(json, this);
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,7 +66,7 @@ public class ClientSocketModel extends SocketModel {
     }
 
     @Override
-    public void onSend(String message) {
+    public synchronized void onSend(String message) {
         try {
             this.outputStream.writeBytes(message + "\n");
         } catch (IOException e) {

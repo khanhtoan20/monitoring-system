@@ -9,6 +9,10 @@ public class JSON extends JSONObject {
         super(message);
     }
 
+    public JSON(Object message) {
+        super(message);
+    }
+
     public String get(String key) {
         try {
             return super.get(key).toString();

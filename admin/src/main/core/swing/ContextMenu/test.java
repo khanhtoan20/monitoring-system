@@ -1,6 +1,5 @@
-package swing;
+package swing.ContextMenu;
 
-import javax.swing.*;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;

