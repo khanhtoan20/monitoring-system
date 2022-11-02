@@ -1,9 +1,8 @@
 package main;
 
-import swing.DashboardGUI;
+import swing.index;
 
 import javax.swing.*;
-import java.io.IOException;
 
 public class main {
     public static void main(String[] args) {
@@ -11,7 +10,7 @@ public class main {
             @Override
             public void run() {
                 try {
-                    new DashboardGUI().setVisible(true);
+                    new index().setVisible(true);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

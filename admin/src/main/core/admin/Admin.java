@@ -5,7 +5,7 @@ import controllers.ProduceController;
 import controllers.base.ProduceExecutable;
 import models.SystemInfoModel;
 import org.json.JSONObject;
-import swing.DashboardGUI;
+import swing.index;
 import utils.JSON;
 import utils.console;
 
@@ -31,9 +31,9 @@ public class Admin {
     private BufferedReader scanner;
     private BufferedReader inputStream;
     private DataOutputStream outputStream;
-    private static DashboardGUI gui;
+    private static index gui;
 
-    public Admin(DashboardGUI gui) {
+    public Admin(index gui) {
         Admin.gui = gui;
         ProduceController.init();
         ConsumeController.init();
@@ -142,7 +142,7 @@ public class Admin {
     }
 
 
-    public static DashboardGUI getGui() {
+    public static index getGui() {
         return gui;
     }
 }

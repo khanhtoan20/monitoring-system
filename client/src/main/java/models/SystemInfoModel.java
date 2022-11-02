@@ -152,4 +152,18 @@ public class SystemInfoModel {
     public String getHostName() {
         return hostName;
     }
+
+    @Override
+    public String toString() {
+        return "SystemInfoModel{" +
+                "osBean=" + osBean +
+                ", ram='" + ram + '\'' +
+                ", cpu='" + cpu + '\'' +
+                ", disk='" + disk + '\'' +
+                ", os='" + os + '\'' +
+                ", ip='" + ip + '\'' +
+                ", MAC_address='" + MAC_address + '\'' +
+                ", hostName='" + hostName + '\'' +
+                '}';
+    }
 }

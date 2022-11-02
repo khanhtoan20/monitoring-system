@@ -1,21 +1,21 @@
 package swing.button;
 
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTarget;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import utils.console;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Area;
 import java.awt.geom.RoundRectangle2D;
+import javax.swing.JButton;
+import javax.swing.border.EmptyBorder;
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTarget;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
-public class ButtonCustom extends JButton implements TableCellRenderer {
+public class ButtonCustom extends JButton {
 
     public ButtonStyle getStyle() {
         return style;
@@ -47,34 +47,29 @@ public class ButtonCustom extends JButton implements TableCellRenderer {
     private int round = 5;
 
     public ButtonCustom() {
-        setOpaque(true);
-        setContentAreaFilled(true);
+        setFocusPainted(false);
+        setContentAreaFilled(false);
         setBorder(new EmptyBorder(8, 8, 8, 8));
-        setForeground(getStyle().foreground);
-        setBackground(getStyle().background);
+        setForeground(Color.WHITE);
         initAnimation();
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent me) {
-                console.info("mouseEntered");
                 animationHover.start(currentStyle.backgroundHover, getStyle().backgroundHover);
             }
 
             @Override
             public void mouseExited(MouseEvent me) {
-                console.info("mouseExited");
                 animationHover.start(currentStyle.backgroundHover, getStyle().background);
             }
 
             @Override
             public void mousePressed(MouseEvent me) {
-                console.info("mousePressed");
                 animationPress.start(currentStyle.background, getStyle().backgroundPress);
             }
 
             @Override
             public void mouseReleased(MouseEvent me) {
-                console.info("mouseReleased");
                 animationPress.start(currentStyle.background, getStyle().background);
             }
         });
@@ -115,22 +110,8 @@ public class ButtonCustom extends JButton implements TableCellRenderer {
         super.paintComponent(grphcs);
     }
 
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        console.log("getTableCellRendererComponent");
-        if (isSelected) {
-            setForeground(table.getSelectionForeground());
-            setBackground(table.getSelectionBackground());
-        } else {
-            setForeground(table.getForeground());
-            setBackground(UIManager.getColor("Button.background"));
-        }
-        return this;
-    }
-
     public enum ButtonStyle {
-        PRIMARY(new Color(236, 236, 236), new Color(3, 3, 3), new Color(200, 200, 200), new Color(200, 200, 200)),
-
+        PRIMARY(Color.decode("#42a5f5"), Color.decode("#42a5f5"), Color.decode("#1565c0"), Color.decode("#1565c0")),
         SECONDARY(new Color(203, 209, 219), new Color(58, 70, 81), new Color(81, 92, 108), new Color(230, 239, 255)),
         DESTRUCTIVE(new Color(255, 138, 48), new Color(238, 238, 238), new Color(198, 86, 0), new Color(255, 161, 90));
 

@@ -7,6 +7,8 @@ import swing.button.ButtonCustom;
 import swing.notification.Notification;
 import swing.progressbar.ProgressBarCustom;
 import swing.table.TableCustom;
+import swing.toggle.ToggleAdapter;
+import swing.toggle.ToggleButton;
 import utils.console;
 
 import javax.swing.*;
@@ -20,90 +22,60 @@ import java.awt.event.ActionListener;
 
 import static utils.Command.*;
 
-public class DashboardGUI extends JFrame {
-    private static Admin admin;
-    /**
-     * Components
-     */
+public class index extends JFrame {
     private JPanel main;
-    private JTable table;
-    private JScrollPane jscrollpane;
-    private JPanel header;
-    private JPanel footer;
-    private JPanel body;
-    private ButtonCustom buttonCustom1;
-    private JPanel right;
-    private JPanel left;
-    private JLabel lbl_title_disk;
-    private JLabel lbl_title_ram;
-    private JLabel lbl_title_cpu;
-    private JLabel lbl_title_uuid;
-    private JLabel lbl_cpu;
-    private JLabel lbl_ram;
-    private JLabel lbl_disk;
-    private JPanel pnl_client_action;
-    private JPanel pnl_client_information;
-    private JPanel pnl_client_progress_bar;
+    private JTextArea txtarea_log;
+    private JTextField txt_uuid;
     private ProgressBarCustom pgb_cpu;
     private ProgressBarCustom pgb_ram;
     private ProgressBarCustom pgb_disk;
-    private JLabel lbl_title_ip;
-    private JLabel lbl_ip;
-    private JPanel pnl_client_screen;
-    private JPanel pnl_client_log;
-    private JLabel lbl_image;
-    private JTextArea txt_area_keylogger;
+    private ButtonCustom btn_logout;
+    private ButtonCustom btn_process;
     private ButtonCustom btn_clipboard;
-    private ButtonCustom btn_keylogger;
-    private JTextField txt_id;
+    private ButtonCustom btn_keylog;
+    private JTable table;
+    private JLabel lbl_uuid;
+    private JLabel lbl_cpu;
+    private JLabel lbl_ram;
+    private JLabel lbl_disk;
+    private JLabel lbl_ip;
     private JTextField txt_cpu;
     private JTextField txt_ram;
     private JTextField txt_disk;
     private JTextField txt_ip;
+    private JLabel lbl_usage_cpu;
+    private JLabel lbl_usage_ram;
+    private JLabel lbl_usage_disk;
+    private JLabel lbl_client_monitor;
+    private JPanel left;
+    private JPanel right;
+    private JScrollPane jsp_table;
+    private JPanel right_left;
+    private JPanel right_right;
+    private JPanel right_left_middle;
+    private JPanel right_left_bottom;
+    private JPanel right_right_top;
+    private JPanel right_right_bottom;
+    private JPanel right_right_middle;
+    private JScrollPane jsp_txtarea_log;
+    private ToggleButton toggleButton1;
+    private JPanel right_left_top;
 
+    private static Admin admin;
+    private String currentClientId;
     private static DefaultTableModel defaultTableModel = new DefaultTableModel();
     private static final Object[] tableHeaders = {"Id", "Host Name", "Operating System", "Mac address", "Ip address"};
-    private String currentClientId;
     private static Notification panel;
-    public DashboardGUI() throws Exception {
-//        (admin = new Admin(this)).start();
-        this.initFrame();
-        panel = new Notification(this, Notification.Type.WARNING, Notification.Location.TOP_CENTER, "Client has disconnect!");
-        txt_id.setBorder(new EmptyBorder(0,0,0,0));
-        txt_cpu.setBorder(new EmptyBorder(0,0,0,0));
-        txt_ram.setBorder(new EmptyBorder(0,0,0,0));
-        txt_disk.setBorder(new EmptyBorder(0,0,0,0));
-        txt_ip.setBorder(new EmptyBorder(0,0,0,0));
-        jscrollpane.setPreferredSize(new Dimension( 600 , 500));
-        table.setModel(defaultTableModel);
-        TableCustom.apply(jscrollpane, TableCustom.TableType.MULTI_LINE);
-        ImageIcon imageIcon = new ImageIcon(new ImageIcon("/test4.jpg").getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH));
-        this.lbl_image.setIcon(imageIcon);
-        lbl_image.setBorder(null);
-        pnl_client_screen.setSize(new Dimension(500,500));
-        lbl_image.setSize(new Dimension(500,500));
+    private static boolean ScreenService = true;
+    public index() {
+        initComponent();
+        (admin = new Admin(this)).start();
+        new Thread(this::fetch).start();
+        new Thread(this::screen).start();
+        new Thread(this::monitoring).start();
     }
 
-    public void sync() {
-        panel.setMessageText(String.format("Client [%s] has disconnected!", currentClientId.substring(0, currentClientId.length()/2)));
-        int rowCount = defaultTableModel.getRowCount();
-        for (int i = rowCount - 1; i >= 0; i--) {
-            if (defaultTableModel.getValueAt(i, 0).equals(currentClientId)) defaultTableModel.removeRow(i);
-        }
-        currentClientId = null;
-        panel.showNotification();
-        txt_id.setText(null);
-        txt_cpu.setText(null);
-        txt_ram.setText(null);
-        txt_disk.setText(null);
-        txt_ip.setText(null);
-        pgb_cpu.setValue(0);
-        pgb_ram.setValue(0);
-        pgb_disk.setValue(0);
-        txt_area_keylogger.setText(null);
-    }
-
-    private void initFrame() throws InterruptedException {
+    private void initComponent() {
         /**
          * Frame config
          */
@@ -117,14 +89,16 @@ public class DashboardGUI extends JFrame {
          * Panel config
          */
         this.main.setBackground(Color.WHITE);
-        this.right.setBackground(Color.WHITE);
         this.left.setBackground(Color.WHITE);
-        this.header.setBackground(Color.WHITE);
-        this.body.setBackground(Color.WHITE);
-        this.footer.setBackground(Color.WHITE);
-        this.pnl_client_progress_bar.setBackground(Color.WHITE);
-        this.pnl_client_information.setBackground(Color.WHITE);
-        this.pnl_client_action.setBackground(Color.WHITE);
+        this.right.setBackground(Color.WHITE);
+        this.right_left.setBackground(Color.WHITE);
+        this.right_right.setBackground(Color.WHITE);
+        this.right_left_middle.setBackground(Color.WHITE);
+        this.right_left_top.setBackground(Color.WHITE);
+        this.right_right_top.setBackground(Color.WHITE);
+        this.right_left_bottom.setBackground(Color.WHITE);
+        this.right_right_middle.setBackground(Color.WHITE);
+        this.right_right_bottom.setBackground(Color.WHITE);
         /**
          * Table config
          */
@@ -138,7 +112,7 @@ public class DashboardGUI extends JFrame {
                 }
                 currentClientId = (String) table.getValueAt(selectedRow, 0);
                 SystemInfoModel client = admin.getClients().get(currentClientId);
-                txt_id.setText(currentClientId);
+                txt_uuid.setText(currentClientId);
                 txt_ram.setText(client.getRam());
                 txt_disk.setText(client.getDisk());
                 txt_cpu.setText(client.getCpu());
@@ -146,7 +120,6 @@ public class DashboardGUI extends JFrame {
 
                 console.info("[CURRENT CLIENT] " + currentClientId);
             }
-
         });
         /**
          * ActionListener config
@@ -158,7 +131,7 @@ public class DashboardGUI extends JFrame {
                 admin.onHandle(COMMAND_CLIPBOARD);
             }
         });
-        this.btn_keylogger.addActionListener(new ActionListener() {
+        this.btn_keylog.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (currentClientId == null) return;
@@ -166,28 +139,40 @@ public class DashboardGUI extends JFrame {
             }
         });
 
-        test.addDefaultContextMenu(txt_area_keylogger);
-        /**
-         * Threading config
-         */
-        new Thread(this::fetch).start();
-        new Thread(this::monitoring).start();
-        new Thread(this::screen).start();
+        test.addDefaultContextMenu(txtarea_log);
+        panel = new Notification(this, Notification.Type.WARNING, Notification.Location.TOP_CENTER, "Client has disconnect!");
+
+        txt_uuid.setBorder(new EmptyBorder(0,0,0,0));
+        txt_cpu.setBorder(new EmptyBorder(0,0,0,0));
+        txt_ram.setBorder(new EmptyBorder(0,0,0,0));
+        txt_disk.setBorder(new EmptyBorder(0,0,0,0));
+        txt_ip.setBorder(new EmptyBorder(0,0,0,0));
+
+        btn_keylog = new ButtonCustom();
+        btn_keylog.setStyle(ButtonCustom.ButtonStyle.PRIMARY);
+        btn_keylog.setText("Keylog");
+
+        table.setModel(defaultTableModel);
+        TableCustom.apply(jsp_table, TableCustom.TableType.MULTI_LINE);
     }
 
-    public void monitoring() {
-        while (true) {
-            console.warn("MONITORING FETCHING...");
-            try {
-                if (currentClientId != null) {
-                    admin.onHandle(COMMAND_MONITORING);
-                }
-                Thread.currentThread().sleep(2000);
-            } catch (InterruptedException e) {
-                e.getStackTrace();
-                throw new RuntimeException(e);
-            }
+    public void sync() {
+        panel.setMessageText(String.format("Client [%s] has disconnected!", currentClientId.substring(0, currentClientId.length()/2)));
+        int rowCount = defaultTableModel.getRowCount();
+        for (int i = rowCount - 1; i >= 0; i--) {
+            if (defaultTableModel.getValueAt(i, 0).equals(currentClientId)) defaultTableModel.removeRow(i);
         }
+        currentClientId = null;
+        panel.showNotification();
+        txt_uuid.setText(null);
+        txt_cpu.setText(null);
+        txt_ram.setText(null);
+        txt_disk.setText(null);
+        txt_ip.setText(null);
+        pgb_cpu.setValue(0);
+        pgb_ram.setValue(0);
+        pgb_disk.setValue(0);
+        txtarea_log.setText(null);
     }
 
     public void fetch() {
@@ -212,7 +197,7 @@ public class DashboardGUI extends JFrame {
     }
 
     public void screen() {
-        while (true) {
+        while (ScreenService) {
             console.warn("SCREEN FETCHING...");
             try {
                 if (currentClientId != null) {
@@ -227,11 +212,24 @@ public class DashboardGUI extends JFrame {
     }
 
     public void updateClientScreen(ImageIcon imageIcon) {
-        pnl_client_screen.setSize(new Dimension(1920, 1080));
-        lbl_image.setBorder(null);
-        lbl_image.setIcon(new ImageIcon(imageIcon.getImage().getScaledInstance(1920, 1080, Image.SCALE_SMOOTH)));
-        lbl_image.setSize(new Dimension(1920, 1080));
-        lbl_image.setPreferredSize(new Dimension(1920, 1080));
+        lbl_client_monitor.setText(null);
+        lbl_client_monitor.setBorder(null);
+        lbl_client_monitor.setIcon(new ImageIcon(imageIcon.getImage().getScaledInstance(400, 300, Image.SCALE_SMOOTH)));
+    }
+
+    public void monitoring() {
+        while (true) {
+            console.warn("MONITORING FETCHING...");
+            try {
+                if (currentClientId != null) {
+                    admin.onHandle(COMMAND_MONITORING);
+                }
+                Thread.currentThread().sleep(2000);
+            } catch (InterruptedException e) {
+                e.getStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void updateProgressBar(int cpu, int ram, int disk) {
@@ -241,10 +239,23 @@ public class DashboardGUI extends JFrame {
     }
 
     public void appendLog(String message) {
-        txt_area_keylogger.append(message + "\n");
+        txtarea_log.append(message + "\n");
     }
 
     public String getCurrentClientId() {
         return currentClientId;
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+        console.error("chay ngay di");
+        this.toggleButton1 = new ToggleButton();
+        this.toggleButton1.setSelected(true);
+        toggleButton1.addEventToggleSelected(new ToggleAdapter() {
+            @Override
+            public void onSelected(boolean selected) {
+                ScreenService = selected;
+            }
+        });
     }
 }
