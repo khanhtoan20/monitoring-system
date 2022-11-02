@@ -19,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static utils.Command.*;
 
@@ -58,21 +59,27 @@ public class index extends JFrame {
     private JPanel right_right_bottom;
     private JPanel right_right_middle;
     private JScrollPane jsp_txtarea_log;
-    private ToggleButton toggleButton1;
+    private ToggleButton toggle_screen;
+    private ToggleButton toggle_monitor;
+    private JPanel monitor;
+    private JPanel usage;
     private JPanel right_left_top;
+    private ToggleButton toggle_usage;
 
     private static Admin admin;
     private String currentClientId;
     private static DefaultTableModel defaultTableModel = new DefaultTableModel();
     private static final Object[] tableHeaders = {"Id", "Host Name", "Operating System", "Mac address", "Ip address"};
     private static Notification panel;
-    private static boolean ScreenService = true;
+    private static Thread a;
+    private static Thread b;
+    private static Thread c;
     public index() {
         initComponent();
         (admin = new Admin(this)).start();
-        new Thread(this::fetch).start();
-        new Thread(this::screen).start();
-        new Thread(this::monitoring).start();
+        (a = new Thread(this::fetch)).start();
+        (b = new Thread(this::screen)).start();
+        (c = new Thread(this::monitoring)).start();
     }
 
     private void initComponent() {
@@ -95,6 +102,8 @@ public class index extends JFrame {
         this.right_right.setBackground(Color.WHITE);
         this.right_left_middle.setBackground(Color.WHITE);
         this.right_left_top.setBackground(Color.WHITE);
+        this.monitor.setBackground(Color.WHITE);
+        this.usage.setBackground(Color.WHITE);
         this.right_right_top.setBackground(Color.WHITE);
         this.right_left_bottom.setBackground(Color.WHITE);
         this.right_right_middle.setBackground(Color.WHITE);
@@ -152,6 +161,30 @@ public class index extends JFrame {
         btn_keylog.setStyle(ButtonCustom.ButtonStyle.PRIMARY);
         btn_keylog.setText("Keylog");
 
+        this.toggle_usage.setSelected(true);
+        this.toggle_usage.addEventToggleSelected(new ToggleAdapter() {
+            @Override
+            public void onSelected(boolean selected) {
+                console.error("toggle_monitor");
+                if (selected) {
+                    c.resume();
+                }
+                c.suspend();
+            }
+        });
+
+        this.toggle_monitor.setSelected(true);
+        this.toggle_monitor.addEventToggleSelected(new ToggleAdapter() {
+            @Override
+            public void onSelected(boolean selected) {
+                console.error("toggle_screen");
+                if (selected) {
+                    b.resume();
+                }
+                b.suspend();
+            }
+        });
+
         table.setModel(defaultTableModel);
         TableCustom.apply(jsp_table, TableCustom.TableType.MULTI_LINE);
     }
@@ -197,7 +230,7 @@ public class index extends JFrame {
     }
 
     public void screen() {
-        while (ScreenService) {
+        while (true) {
             console.warn("SCREEN FETCHING...");
             try {
                 if (currentClientId != null) {
@@ -244,18 +277,5 @@ public class index extends JFrame {
 
     public String getCurrentClientId() {
         return currentClientId;
-    }
-
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-        console.error("chay ngay di");
-        this.toggleButton1 = new ToggleButton();
-        this.toggleButton1.setSelected(true);
-        toggleButton1.addEventToggleSelected(new ToggleAdapter() {
-            @Override
-            public void onSelected(boolean selected) {
-                ScreenService = selected;
-            }
-        });
     }
 }
