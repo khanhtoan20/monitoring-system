@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static utils.Command.*;
+import static utils.Command.COMMAND_PROCESS;
 import static utils.Environment.DEFAULT_SERVER_HOST;
 
 public class ProduceController {
@@ -22,6 +23,11 @@ public class ProduceController {
         put(COMMAND_CLIPBOARD, ProduceController::getClipboard);
         put(COMMAND_KEYLOGGER, ProduceController::getKeylogger);
         put(COMMAND_CLIENT_SCREEN, ProduceController::getScreen);
+        put(COMMAND_PROCESS, ProduceController::getProcess);
+    }
+
+    private static String getProcess(Admin admin) {
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_PROCESS).json();
     }
 
     private static String getScreen(Admin admin) {

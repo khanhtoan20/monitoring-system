@@ -6,6 +6,9 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 public class TableCustom {
 
@@ -43,33 +46,33 @@ public class TableCustom {
         scroll.getVerticalScrollBar().setUI(new ScrollBarCustomUI());
         scroll.getHorizontalScrollBar().setUI(new ScrollBarCustomUI());
         table.getTableHeader().setBackground(new Color(250, 250, 250));
-//        table.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseExited(MouseEvent e) {
-//                hoverRow.setIndex(-1);
-//                table.repaint();
-//            }
-//
-//        });
-//        table.addMouseMotionListener(new MouseMotionAdapter() {
-//            @Override
-//            public void mouseMoved(MouseEvent e) {
-//                int row = table.rowAtPoint(e.getPoint());
-//                if (row != hoverRow.getIndex()) {
-//                    hoverRow.setIndex(row);
-//                    table.repaint();
-//                }
-//            }
-//
-//            @Override
-//            public void mouseDragged(MouseEvent e) {
-//                int row = table.rowAtPoint(e.getPoint());
-//                if (row != hoverRow.getIndex()) {
-//                    hoverRow.setIndex(row);
-//                    table.repaint();
-//                }
-//            }
-//        });
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hoverRow.setIndex(-1);
+                table.repaint();
+            }
+
+        });
+        table.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                if (row != hoverRow.getIndex()) {
+                    hoverRow.setIndex(row);
+                    table.repaint();
+                }
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                if (row != hoverRow.getIndex()) {
+                    hoverRow.setIndex(row);
+                    table.repaint();
+                }
+            }
+        });
     }
 
     public static enum TableType {

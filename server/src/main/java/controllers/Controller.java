@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static utils.Command.*;
-import static utils.Command.COMMAND_CLIENT_SCREEN;
 import static utils.Environment.*;
 
 public class Controller {
@@ -31,6 +30,21 @@ public class Controller {
         put(COMMAND_MONITORING, Controller::getMonitoring);
         put(COMMAND_GET_ALL_CLIENTS, Controller::getAllClients);
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
+        put(COMMAND_PROCESS, Controller::getProcess);
+    }
+
+    private static void getProcess(JSON json, SocketModel model) {
+        if (json.get("uuid").equals(Server.getHost().getUUID())) {
+            String temp = new MessageModel(DEFAULT_SERVER_HOST, json.get("to"), COMMAND_PROCESS).json();
+            ClientSocketModel client = Server.getClientConnections().get(json.get("to"));
+            if (client != null) {
+                client.onSend(temp);
+                return;
+            }
+            model.onSend(new MessageModel(DEFAULT_SERVER_HOST, model.getUUID(), COMMAND_SYNC).put("clients", Server.getClientConnections().values()).json());
+            return;
+        }
+        Server.getHost().onSend(json.toString());
     }
 
     private static void getScreen(JSON json, SocketModel model) {

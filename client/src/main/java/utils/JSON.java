@@ -6,6 +6,10 @@ import org.json.JSONObject;
 
 public class JSON extends JSONObject {
 
+    public JSON() {
+        super();
+    }
+
     public JSON(String message) {
         super(message);
     }

