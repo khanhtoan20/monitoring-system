@@ -52,7 +52,7 @@ public class Client {
             }
 
         } catch (Exception e) {
-            if (e.getMessage().matches(".*reset|closed.*")) System.exit(0);
+            if (e instanceof SocketException) return;
             e.printStackTrace();
         }
     }
@@ -64,7 +64,8 @@ public class Client {
             Executable executor = Controller.get(json.get("command"));
             this.onSend(executor.execute(json));
         } catch (Exception e) {
-            throw e;
+            if (e instanceof SocketException) return;
+            e.printStackTrace();
         }
     }
 
@@ -72,7 +73,8 @@ public class Client {
         try {
             this.outputStream.writeBytes(message + "\n");
         } catch (Exception e) {
-            throw e;
+            if (e instanceof SocketException) return;
+            e.printStackTrace();
         }
     }
 

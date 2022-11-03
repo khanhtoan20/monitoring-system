@@ -12,7 +12,8 @@ public class main {
                 try {
                     new index().setVisible(true);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
+                    System.exit(-1);
                 }
             }
         });

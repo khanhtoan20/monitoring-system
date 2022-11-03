@@ -21,16 +21,6 @@ public class SystemInfoModel {
     public String MAC_address;
     public String hostName;
 
-    public SystemInfoModel(Object... vector) {
-        this.os = vector[1] != null ? vector[1].toString() : UNKNOWN;
-        this.ip = vector[2] != null ? vector[2].toString() : UNKNOWN;
-        this.ram = vector[3] != null ? vector[3].toString() : UNKNOWN;
-        this.cpu = vector[4] != null ? vector[4].toString() : UNKNOWN;
-        this.disk = vector[5] != null ? vector[5].toString() : UNKNOWN;
-        this.hostName = vector[6] != null ? vector[6].toString() : UNKNOWN;
-        this.MAC_address = vector[7] != null ? vector[7].toString() : UNKNOWN;
-    }
-
     private String get(Vector<String> vector, Integer index) {
         try {
             return vector.get(index);

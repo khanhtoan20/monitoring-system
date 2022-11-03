@@ -8,6 +8,7 @@ import utils.console;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 import static utils.Command.COMMAND;
 import static utils.Environment.DEFAULT_SERVER_HOST;
@@ -32,7 +33,7 @@ public class ClientSocketModel extends SocketModel {
         try {
             return this.inputStream.readLine();
         } catch (Exception e) {
-            if (e.getMessage().contains("Connection reset")) return null;
+            if (e instanceof SocketException) return null;
             e.printStackTrace();
             return null;
         }
@@ -60,6 +61,7 @@ public class ClientSocketModel extends SocketModel {
             Controller.get(json.get(COMMAND)).execute(json, this);
         } catch (Exception e) {
             e.printStackTrace();
+            console.log(message);
             this.onSend(new MessageModel(DEFAULT_SERVER_HOST, uuid, e.getMessage()).json());
         }
     }
@@ -69,7 +71,7 @@ public class ClientSocketModel extends SocketModel {
         try {
             this.outputStream.writeBytes(message + "\n");
         } catch (IOException e) {
-            if (e.getMessage().contains("reset|closed")) return;
+            if (e instanceof SocketException) return;
             e.printStackTrace();
         }
     }

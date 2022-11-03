@@ -10,7 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-public class test extends JPopupMenu
+public class ContextMenu extends JPopupMenu
 {
     private Clipboard clipboard;
 
@@ -26,7 +26,7 @@ public class test extends JPopupMenu
 
     private JTextComponent textComponent;
 
-    public test()
+    public ContextMenu()
     {
         undoManager = new UndoManager();
         clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -149,7 +149,7 @@ public class test extends JPopupMenu
 
     public static void addDefaultContextMenu(JTextComponent component)
     {
-        test defaultContextMenu = new test();
+        ContextMenu defaultContextMenu = new ContextMenu();
         defaultContextMenu.addTo(component);
     }
 }

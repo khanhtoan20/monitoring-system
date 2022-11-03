@@ -4,6 +4,7 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import swing.shadow.ShadowRenderer;
 
+import javax.accessibility.Accessible;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -15,7 +16,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToggleButton extends JComponent {
+public class ToggleButton extends JComponent implements Accessible {
 
     public boolean isSelected() {
         return selected;
@@ -87,7 +88,7 @@ public class ToggleButton extends JComponent {
     private void init() {
         setPreferredSize(new Dimension(60, 35));
         setBackground(new Color(255, 255, 255));
-        setForeground(new Color(156, 63, 243));
+        setForeground(new Color(65, 165, 245));
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {

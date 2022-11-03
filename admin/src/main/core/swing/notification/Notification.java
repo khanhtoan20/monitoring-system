@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Notification extends javax.swing.JComponent {
-
+    private int sleep = 10000;
     private JDialog dialog;
     private Animator animator;
     private final Frame frame;
@@ -20,18 +20,19 @@ public class Notification extends javax.swing.JComponent {
     private int shadowSize = 6;
     private Type type;
     private Location location;
-
-    public Notification(Frame frame, Type type, Location location, String message) {
+    private ImageIcon success;
+    private ImageIcon info;
+    private ImageIcon waring;
+    public Notification(Frame frame, Type type, Location location) {
         this.frame = frame;
         this.type = type;
         this.location = location;
+        this.success = new javax.swing.ImageIcon(getClass().getResource("success.png"));
+        this.info = new javax.swing.ImageIcon(getClass().getResource("info.png"));
+        this.waring = new javax.swing.ImageIcon(getClass().getResource("warning.png"));
         initComponents();
         init();
         initAnimator();
-    }
-
-    public void setMessageText(String message) {
-        lbMessageText.setText(message);
     }
 
     private void init() {
@@ -43,13 +44,27 @@ public class Notification extends javax.swing.JComponent {
         dialog.add(this);
         dialog.setSize(getPreferredSize());
         if (type == Type.SUCCESS) {
-            lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("sucess.png")));
+            lbIcon.setIcon(success);
             lbMessage.setText("Success");
         } else if (type == Type.INFO) {
-            lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("info.png")));
+            lbIcon.setIcon(info);
             lbMessage.setText("Info");
         } else {
-            lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("warning.png")));
+            lbIcon.setIcon(waring);
+            lbMessage.setText("Warning");
+        }
+    }
+
+    private void setType(Type type) {
+        this.type = type;
+        if (type == Type.SUCCESS) {
+            lbIcon.setIcon(success);
+            lbMessage.setText("Success");
+        } else if (type == Type.INFO) {
+            lbIcon.setIcon(info);
+            lbMessage.setText("Info");
+        } else {
+            lbIcon.setIcon(waring);
             lbMessage.setText("Warning");
         }
     }
@@ -145,7 +160,10 @@ public class Notification extends javax.swing.JComponent {
         animator.setResolution(5);
     }
 
-    public void showNotification() {
+    public void showNotification(String message, int sleep, Type type) {
+        this.setType(type);
+        this.sleep = sleep;
+        lbMessageText.setText(message);
         animator.start();
     }
 
@@ -167,7 +185,7 @@ public class Notification extends javax.swing.JComponent {
 
     private void sleep() {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(sleep);
         } catch (InterruptedException e) {
         }
     }
@@ -227,7 +245,6 @@ public class Notification extends javax.swing.JComponent {
         cmdClose = new javax.swing.JButton();
 
         lbIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("success.png"))); // NOI18N
 
         panel.setOpaque(false);
 
