@@ -3,6 +3,7 @@ package swing;
 import admin.Admin;
 import controllers.ProduceController;
 import org.json.JSONArray;
+import swing.button.ButtonCustom;
 import swing.table.TableCustom;
 import utils.JSON;
 import utils.console;
@@ -12,6 +13,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
+/**
+ * MOUSE WHEEL LISTENER
+ * https://stackoverflow.com/questions/4178957/using-the-mouse-wheel-with-jspinner-in-java
+ */
 
 public class ProcessDialog extends JDialog {
     private JPanel contentPane;
@@ -66,7 +71,13 @@ public class ProcessDialog extends JDialog {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
+        this.spinner.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                Integer val = new Integer(((Integer) spinner.getValue()).intValue() - e.getWheelRotation());
+                spinner.setValue(val > 0 ? val : 0);
+            }
+        });
         this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
@@ -83,7 +94,10 @@ public class ProcessDialog extends JDialog {
 
     private void onOK() {
         try {
-            console.error(pid);
+            if (pid == null) {
+                JOptionPane.showMessageDialog(this, "Please select a process first!");
+                return;
+            }
             this.admin.onSend(ProduceController.endProcess(pid, spinner.getValue().toString()));
             JOptionPane.showMessageDialog(this, pid + " is scheduled to stop!");
             dispose();

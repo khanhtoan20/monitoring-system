@@ -4,22 +4,16 @@ import controllers.ConsumeController;
 import controllers.ProduceController;
 import controllers.base.ProduceExecutable;
 import models.SystemInfoModel;
-import org.json.JSONObject;
+import models.Worker;
 import swing.index;
 import utils.JSON;
 import utils.console;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 
 import static utils.Command.*;
@@ -27,6 +21,9 @@ import static utils.Environment.DEFAULT_SERVER_HOST;
 import static utils.Environment.DEFAULT_SERVER_PORT;
 
 public class Admin {
+    private static final String FETCH_WORKER = "admin_fetch_worker";
+    private static final String CONSUMER_WORKER = "consumer_worker";
+
     private HashMap clients;
     private Socket connection;
     private BufferedReader scanner;
@@ -71,9 +68,8 @@ public class Admin {
 
             this.onSend(ProduceController.get(COMMAND_LOGIN).execute(null));
 
-            new Thread(this::onConsume).start();
-//            new Thread(this::onProduce).start();
-            new Thread(this::fetch).start();
+            index.workers.put(FETCH_WORKER, new Worker(this::fetch)).start();
+            index.workers.put(CONSUMER_WORKER, new Worker(this::onConsume)).start();
         } catch (Exception e) {
 
         }
@@ -82,9 +78,9 @@ public class Admin {
     public void fetch() {
         while (true) {
             try {
-                console.warn("[Admin][fetch]");
+                console.warn("[Admin][Fetch]");
                 this.onSend(ProduceController.get(COMMAND_GET_ALL_CLIENTS).execute(null));
-                Thread.currentThread().sleep(5000);
+                Thread.currentThread().sleep(10000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -137,7 +133,7 @@ public class Admin {
             this.outputStream.close();
             this.inputStream.close();
             this.connection.close();
-            System.exit(1);
+            System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();
         }

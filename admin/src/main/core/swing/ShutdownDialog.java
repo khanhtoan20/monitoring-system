@@ -2,12 +2,12 @@ package swing;
 
 import admin.Admin;
 import controllers.ProduceController;
-import utils.console;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 public class ShutdownDialog extends JDialog {
     private JPanel contentPane;
@@ -15,9 +15,13 @@ public class ShutdownDialog extends JDialog {
     private JButton buttonCancel;
     private JSpinner spinner;
     private JLabel lbl;
+    private JPanel view;
+    private JPanel action;
+    private JPanel controll;
     private Admin admin;
     public ShutdownDialog(Admin admin) {
         this.admin = admin;
+        setSize(400, 200);
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -48,13 +52,14 @@ public class ShutdownDialog extends JDialog {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        spinner.addPropertyChangeListener(new PropertyChangeListener() {
+        this.spinner.addMouseWheelListener(new MouseWheelListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                Integer val = new Integer(((Integer) spinner.getValue()).intValue() - e.getWheelRotation());
+                spinner.setValue(val > 0 ? val : 0);
                 lbl.setText(String.format("Client will be shutdown in (%s) minutes", spinner.getValue()));
             }
         });
-        pack();
     }
 
     private void onOK() {

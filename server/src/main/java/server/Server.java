@@ -19,7 +19,6 @@ public class Server {
 
     public Server() {
         Controller.init();
-//        AdminController.init();
     }
 
     public void start() {

@@ -167,7 +167,6 @@ public class Notification extends javax.swing.JComponent {
         try {
             animator.start();
         } catch (Exception e) {
-            showNotification(message, sleep, type);
         }
     }
 

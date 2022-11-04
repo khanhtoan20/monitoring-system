@@ -3,19 +3,16 @@ package swing;
 import admin.Admin;
 import models.SystemInfoModel;
 import models.Worker;
+import org.json.JSONTokener;
 import swing.ContextMenu.ContextMenu;
 import swing.button.ButtonCustom;
 import swing.notification.Notification;
 import swing.progressbar.ProgressBarCustom;
 import swing.table.TableCustom;
-import swing.toggle.ToggleAdapter;
-import swing.toggle.ToggleButton;
 import utils.console;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -69,11 +66,14 @@ public class index extends JFrame {
     private JPanel monitor;
     private JPanel usage;
     private JPanel right_left_top;
+    private JPanel header;
+    private JCheckBox toggle_all;
+    private JPanel all;
 
     private String currentClientId;
     private static Admin admin;
     private static Notification notification;
-    private static HashMap<String, Worker> workers = new HashMap<>();
+    public static HashMap<String, Worker> workers = new HashMap<>();
     private static DefaultTableModel defaultTableModel = new DefaultTableModel();
 
     private static final String DISCONNECT_MESSAGE_TEMPLATE = "Client [%s] has disconnected!";
@@ -84,17 +84,14 @@ public class index extends JFrame {
     private static final Integer INDEX_WIDTH = 1200;
     private static final Integer INDEX_HEIGHT = 800;
     private static final Integer NOTIFICATION_SLEEP = 5000;
+    private static final Color DISABLE_COLOR = new Color(230, 230, 230);
 
     public index() {
         initComponent();
         (admin = new Admin(this)).start();
-        workers.put(FETCH_WORKER, new Worker(this::fetchTable));
-        workers.put(MONITOR_WORKER, new Worker(this::fetchClientMonitor));
-        workers.put(SYSTEM_USAGE_WORKER, new Worker(this::fetchClientSystemUsage));
-
-        workers.get(FETCH_WORKER).start();
-        workers.get(MONITOR_WORKER).start();
-        workers.get(SYSTEM_USAGE_WORKER).start();
+        workers.put(FETCH_WORKER, new Worker(this::fetchTable)).start();
+        workers.put(MONITOR_WORKER, new Worker(this::fetchClientMonitor)).start();
+        workers.put(SYSTEM_USAGE_WORKER, new Worker(this::fetchClientSystemUsage)).start();
     }
 
     private void initComponent() {
@@ -105,13 +102,15 @@ public class index extends JFrame {
         this.setResizable(true);
         this.setContentPane(main);
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         /**
          * Component config
          */
+        this.header.setBackground(Color.WHITE);
         this.main.setBackground(Color.WHITE);
         this.left.setBackground(Color.WHITE);
         this.usage.setBackground(Color.WHITE);
+        this.all.setBackground(Color.WHITE);
         this.right.setBackground(Color.WHITE);
         this.monitor.setBackground(Color.WHITE);
         this.right_left.setBackground(Color.WHITE);
@@ -153,6 +152,18 @@ public class index extends JFrame {
         /**
          * Listener config
          */
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                if (JOptionPane.showConfirmDialog(null,
+                        "Are you sure you want to exit?", "Confirm exit?",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+                    workers.forEach((key, val) -> val.destroy());
+                    admin.onStop();
+                }
+            }
+        });
         this.btn_clipboard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -179,43 +190,40 @@ public class index extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (currentClientId == null) return;
                 ShutdownDialog dialog = new ShutdownDialog(admin);
+                /**
+                 * Exception "AWT-EventQueue-0" java.lang.ArrayIndexOutOfBoundsException 0 >= 0
+                 */
                 dialog.setVisible(true);
             }
         });
         this.toggle_usage.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
+                console.error("toggle_usage");
                 if (toggle_usage.isSelected()) {
-                    workers.get(SYSTEM_USAGE_WORKER).resume();
-                    workers.get(SYSTEM_USAGE_WORKER).setStatus(true);
-                    right_right_middle.setBackground(Color.WHITE);
+                    toggleUsageON();
                     return;
                 }
-                right_right_middle.setBackground(new Color(240,240,240));
-                pgb_cpu.setBackground(new Color(240,240,240));
-                pgb_disk.setBackground(new Color(240,240,240));
-                pgb_ram.setBackground(new Color(240,240,240));
-                fetchClientSystemUsage(0, 0, 0);
-                workers.get(SYSTEM_USAGE_WORKER).suspend();
-                workers.get(SYSTEM_USAGE_WORKER).setStatus(false);
-                notification.showNotification("System usage stream stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
+                toggleUsageOFF();
             }
         });
         this.toggle_monitor.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
+                console.error("toggle_monitor");
                 if (toggle_monitor.isSelected()) {
-                    lbl_client_monitor.setIcon(new ImageIcon(getClass().getResource("loading.gif")));
-                    right_left_middle.setBackground(Color.WHITE);
-                    lbl_client_monitor.setText(null);
-                    workers.get(MONITOR_WORKER).resume();
-                    workers.get(MONITOR_WORKER).setStatus(true);
+                    toggleMonitorON();
                     return;
                 }
-                lbl_client_monitor.setIcon(null);
-                lbl_client_monitor.setText("OFF");
-                right_left_middle.setBackground(new Color(240,240,240));
-                workers.get(MONITOR_WORKER).suspend();
-                workers.get(MONITOR_WORKER).setStatus(false);
-                notification.showNotification("Monitor stream stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
+                toggleMonitorOFF();
+            }
+        });
+        this.toggle_all.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (toggle_all.isSelected()) {
+                    toggleAllON();
+                    return;
+                }
+                toggleAllOFF();
             }
         });
         /**
@@ -223,6 +231,59 @@ public class index extends JFrame {
          */
         ContextMenu.addDefaultContextMenu(txtarea_log);
         notification = new Notification(this, Notification.Type.WARNING, Notification.Location.TOP_CENTER);
+    }
+
+    private void toggleUsageON() {
+        workers.get(SYSTEM_USAGE_WORKER).resume();
+        workers.get(SYSTEM_USAGE_WORKER).setStatus(true);
+        right_right_middle.setBackground(Color.WHITE);
+        pgb_cpu.setBackground(Color.WHITE);
+        pgb_disk.setBackground(Color.WHITE);
+        pgb_ram.setBackground(Color.WHITE);
+    }
+
+    private void toggleUsageOFF() {
+        setToggleAll(false);
+        right_right_middle.setBackground(DISABLE_COLOR);
+        pgb_cpu.setBackground(DISABLE_COLOR);
+        pgb_disk.setBackground(DISABLE_COLOR);
+        pgb_ram.setBackground(DISABLE_COLOR);
+        fetchClientSystemUsage(0, 0, 0);
+        workers.get(SYSTEM_USAGE_WORKER).suspend();
+        workers.get(SYSTEM_USAGE_WORKER).setStatus(false);
+        notification.showNotification("System usage stream stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
+    }
+
+    private void toggleMonitorON() {
+        lbl_client_monitor.setIcon(new ImageIcon(getClass().getResource("loading.gif")));
+        right_left_middle.setBackground(Color.WHITE);
+        lbl_client_monitor.setText(null);
+        workers.get(MONITOR_WORKER).resume();
+        workers.get(MONITOR_WORKER).setStatus(true);
+    }
+
+    private void toggleMonitorOFF() {
+        setToggleAll(false);
+        lbl_client_monitor.setIcon(null);
+        lbl_client_monitor.setText("OFF");
+        right_left_middle.setBackground(DISABLE_COLOR);
+        workers.get(MONITOR_WORKER).suspend();
+        workers.get(MONITOR_WORKER).setStatus(false);
+        notification.showNotification("Monitor stream stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
+    }
+
+    private void toggleAllON() {
+        this.toggle_usage.setSelected(true);
+        this.toggle_monitor.setSelected(true);
+    }
+
+    private void toggleAllOFF() {
+        this.toggle_usage.setSelected(false);
+        this.toggle_monitor.setSelected(false);
+    }
+
+    private void setToggleAll(boolean bool) {
+        this.toggle_all.setSelected(bool);
     }
 
     public void fetchTable() {
