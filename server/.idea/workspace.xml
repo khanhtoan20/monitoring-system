@@ -5,37 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b719cbe4-2846-4809-aa35-228517a1bec5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/core/controllers/ConsumeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/controllers/ConsumeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/core/controllers/ProduceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/controllers/ProduceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/core/swing/ProcessDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/ProcessDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/core/swing/index.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/index.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/core/swing/notification/Notification.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/notification/Notification.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/core/utils/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/utils/Command.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/controllers/ConsumeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/controllers/ConsumeController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/controllers/ProduceController.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/controllers/ProduceController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/ProcessDialog$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/ProcessDialog$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/ProcessDialog$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/ProcessDialog$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/ProcessDialog$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/ProcessDialog$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/ProcessDialog$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/ProcessDialog$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/ProcessDialog$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/ProcessDialog$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/ProcessDialog.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/ProcessDialog.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/notification/Notification$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/notification/Notification$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/notification/Notification$Location.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/notification/Notification$Location.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/notification/Notification$Type.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/notification/Notification$Type.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/notification/Notification.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/notification/Notification.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/utils/Command.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/utils/Command.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../client/src/main/java/controllers/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/controllers/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/utils/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/utils/Command.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../client/target/classes/controllers/Controller.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/controllers/Controller.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/target/classes/utils/Command.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/utils/Command.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Command.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/controllers/Controller.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controllers/Controller.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Command.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/utils/Command.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

