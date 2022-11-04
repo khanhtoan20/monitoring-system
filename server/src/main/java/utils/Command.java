@@ -6,7 +6,6 @@ public class Command {
      */
 
     public static final String COMMAND = "command";
-    public static final String COMMAND_RAM = "/ram";
     public static final String COMMAND_LOGIN = "/login";
     public static final String COMMAND_RESPONSE = "/response";
     public static final String COMMAND_BROADCAST = "/broadcast";
@@ -19,6 +18,7 @@ public class Command {
     public static final String COMMAND_CLIENT_SCREEN = "/screen";
     public static final String COMMAND_PROCESS = "/process";
     public static final String COMMAND_END_PROCESS = "/end_process";
-
-    public static final String RESPONSE_SUCCESS = "Successfully";
+    public static final String COMMAND_DO_NOTHING = "/do_nothing";
+    public static final String COMMAND_NOTIFICATION = "/notification";
+    public static final String COMMAND_SHUTDOWN = "/shutdown";
 }

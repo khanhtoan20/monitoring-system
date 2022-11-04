@@ -35,17 +35,17 @@ public class ConsumeController {
         put(COMMAND_MONITORING, ConsumeController::getMonitoring);
         put(COMMAND_GET_ALL_CLIENTS, ConsumeController::getAllClients);
         put(COMMAND_PROCESS, ConsumeController::getProcess);
+        put(COMMAND_NOTIFICATION, ConsumeController::notify);
+    }
+
+    private static void notify(JSON input, Admin admin) {
+        Admin.getGui().showNotification(input.get("notification"));
     }
 
     private static void getProcess(JSON input, Admin admin) {
         JSONArray arr = new JSONArray(input.get("processes"));
-        ProcessDialog dialog = new ProcessDialog(arr);
-        dialog.pack();
+        ProcessDialog dialog = new ProcessDialog(arr, admin);
         dialog.setVisible(true);
-//        arr.forEach(e -> {
-//            JSON temp = new JSON(e.toString());
-//            Admin.getGui().appendLog("[Process] " + temp.get("pid") + " | " + temp.get("cmd"));
-//        });
     }
 
     private static void getScreen(JSON input, Admin admin) {

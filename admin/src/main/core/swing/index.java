@@ -174,6 +174,14 @@ public class index extends JFrame {
                 admin.onHandle(COMMAND_PROCESS);
             }
         });
+        this.btn_logout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentClientId == null) return;
+                ShutdownDialog dialog = new ShutdownDialog(admin);
+                dialog.setVisible(true);
+            }
+        });
         this.toggle_usage.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if (toggle_usage.isSelected()) {
@@ -301,6 +309,10 @@ public class index extends JFrame {
         pgb_ram.setValue(0);
         pgb_disk.setValue(0);
         txtarea_log.setText(null);
+    }
+
+    public void showNotification(String message){
+        notification.showNotification(message, NOTIFICATION_SLEEP, Notification.Type.INFO);
     }
 
     public String getCurrentClientId() {

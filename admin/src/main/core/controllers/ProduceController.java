@@ -79,6 +79,17 @@ public class ProduceController {
         return controller.put(key, value);
     }
 
+    public static String endProcess(String pid, String countdown) {
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_END_PROCESS)
+                .put("pid", pid)
+                .put("countdown", countdown)
+                .json();
+    }
+
+    public static String shutdown(String countdown) {
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_SHUTDOWN).put("countdown", countdown).json();
+    }
+
     public static void main(String[] args) throws InterruptedException {
 //        String tmp1 = System.getenv("PROCESSOR_IDENTIFIER");
 //        String tmp2 = System.getenv("PROCESSOR_ARCHITECTURE");

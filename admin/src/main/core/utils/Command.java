@@ -19,4 +19,6 @@ public class Command {
     public static final String COMMAND_CLIENT_SCREEN = "/screen";
     public static final String COMMAND_PROCESS = "/process";
     public static final String COMMAND_END_PROCESS = "/end_process";
+    public static final String COMMAND_NOTIFICATION = "/notification";
+    public static final String COMMAND_SHUTDOWN = "/shutdown";
 }

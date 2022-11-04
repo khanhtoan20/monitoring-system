@@ -164,7 +164,11 @@ public class Notification extends javax.swing.JComponent {
         this.setType(type);
         this.sleep = sleep;
         lbMessageText.setText(message);
-        animator.start();
+        try {
+            animator.start();
+        } catch (Exception e) {
+            showNotification(message, sleep, type);
+        }
     }
 
     private void closeNotification() {

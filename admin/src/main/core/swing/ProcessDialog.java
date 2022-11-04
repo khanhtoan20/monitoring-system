@@ -1,5 +1,7 @@
 package swing;
 
+import admin.Admin;
+import controllers.ProduceController;
 import org.json.JSONArray;
 import swing.table.TableCustom;
 import utils.JSON;
@@ -20,9 +22,15 @@ public class ProcessDialog extends JDialog {
     private JTextField txt_process;
     private JSpinner spinner;
     private String pid;
-    public ProcessDialog(JSONArray process) {
-        DefaultTableModel defaultTableModel = new DefaultTableModel();
+    private Admin admin;
+    public ProcessDialog(JSONArray process, Admin admin) {
+        this.admin = admin;
+        setContentPane(contentPane);
+        setModal(true);
         setLocationRelativeTo(null);
+        getRootPane().setDefaultButton(buttonOK);
+
+        DefaultTableModel defaultTableModel = new DefaultTableModel();
         defaultTableModel.setColumnIdentifiers(new Object[]{"pid", "cmd"});
         table.setModel(defaultTableModel);
         TableCustom.apply(jsp, TableCustom.TableType.MULTI_LINE);
@@ -30,9 +38,7 @@ public class ProcessDialog extends JDialog {
             JSON temp = new JSON(e.toString());
             defaultTableModel.addRow(new Object[]{temp.get("pid"), temp.get("cmd")});
         });
-        setContentPane(contentPane);
-        setModal(true);
-        getRootPane().setDefaultButton(buttonOK);
+
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -72,12 +78,18 @@ public class ProcessDialog extends JDialog {
                 txt_process.setText(String.format("[%s][%s]", pid, table.getValueAt(selectedRow, 1)));
             }
         });
+        pack();
     }
 
     private void onOK() {
-        console.info(spinner.getValue()+"");
-//        spinner.getValue();
-//        dispose();
+        try {
+            console.error(pid);
+            this.admin.onSend(ProduceController.endProcess(pid, spinner.getValue().toString()));
+            JOptionPane.showMessageDialog(this, pid + " is scheduled to stop!");
+            dispose();
+        } catch (Exception e) {
+            dispose();
+        }
     }
 
     private void onCancel() {
