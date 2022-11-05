@@ -36,5 +36,5 @@ public class Environment {
     public static final String CPU = "cpu";
     public static final String DISK = "disk";
     public static final String MAC_ADDRESS = "MAC_address";
-    public static final String HOSTNAME = "hostname";
+    public static final String HOSTNAME = "hostName";
 }

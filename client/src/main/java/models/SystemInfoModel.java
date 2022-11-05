@@ -3,7 +3,7 @@ package models;
 import com.sun.management.OperatingSystemMXBean;
 import utils.Helper;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -40,7 +40,7 @@ public class SystemInfoModel {
         this.MAC_address = this.initMACAddress();
     }
 
-    private  String initHostName() {
+    private String initHostName() {
         try {
             return InetAddress.getLocalHost().getHostName();
         } catch (Exception e) {

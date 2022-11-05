@@ -9,6 +9,7 @@ import swing.index;
 import utils.JSON;
 import utils.console;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -21,8 +22,8 @@ import static utils.Environment.DEFAULT_SERVER_HOST;
 import static utils.Environment.DEFAULT_SERVER_PORT;
 
 public class Admin {
-    private static final String FETCH_WORKER = "admin_fetch_worker";
     private static final String CONSUMER_WORKER = "consumer_worker";
+    private static final String FETCH_WORKER = "admin_fetch_worker";
 
     private HashMap clients;
     private Socket connection;
@@ -36,18 +37,16 @@ public class Admin {
         ProduceController.init();
         ConsumeController.init();
         clients = new HashMap<String, SystemInfoModel>();
+        index.workers.put(FETCH_WORKER, new Worker(this::fetch));
+        index.workers.put(CONSUMER_WORKER, new Worker(this::onConsume));
     }
 
-    public void setClients(HashMap clients) {
-        this.clients = clients;
+    public void resetClients() {
+        this.clients = new HashMap<String, SystemInfoModel>();
     }
 
     public HashMap<String, SystemInfoModel> getClients() {
         return clients;
-    }
-
-    public BufferedReader getScanner() {
-        return scanner == null ? scanner = new BufferedReader(new InputStreamReader(System.in)) : scanner;
     }
 
     public BufferedReader getInputStream() throws Exception {
@@ -65,21 +64,19 @@ public class Admin {
 
             this.getOutputStream();
             this.getInputStream();
+            this.onSend(ProduceController.get(COMMAND_GET_HOST_PRIVILEGE).execute(null));
 
-            this.onSend(ProduceController.get(COMMAND_LOGIN).execute(null));
-
-            index.workers.put(FETCH_WORKER, new Worker(this::fetch)).start();
-            index.workers.put(CONSUMER_WORKER, new Worker(this::onConsume)).start();
+            index.workers.get(FETCH_WORKER).start();
+            index.workers.get(CONSUMER_WORKER).start();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
     public void fetch() {
         while (true) {
             try {
-                console.warn("[Admin][Fetch]");
-                this.onSend(ProduceController.get(COMMAND_GET_ALL_CLIENTS).execute(null));
+                this.onSend(ProduceController.get(COMMAND_GET_CLIENTS).execute(null));
                 Thread.currentThread().sleep(10000);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -97,19 +94,6 @@ public class Admin {
                 e.printStackTrace();
                 this.onStop();
             }
-        }
-    }
-
-    public void onProduce() {
-        String output;
-        try {
-            while (!(output = this.getScanner().readLine()).equals("x")) {
-                this.onHandle(output);
-            }
-            this.onStop();
-        } catch (Exception e) {
-            e.printStackTrace();
-            this.onStop();
         }
     }
 
@@ -142,5 +126,19 @@ public class Admin {
 
     public static index getGui() {
         return gui;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    new index().setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(-1);
+                }
+            }
+        });
     }
 }

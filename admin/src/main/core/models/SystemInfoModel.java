@@ -1,14 +1,5 @@
 package models;
 
-import com.sun.management.OperatingSystemMXBean;
-import utils.Helper;
-
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.util.Vector;
 
 public class SystemInfoModel {

