@@ -3,7 +3,6 @@ package swing;
 import admin.Admin;
 import models.SystemInfoModel;
 import models.Worker;
-import org.json.JSONTokener;
 import swing.ContextMenu.ContextMenu;
 import swing.button.ButtonCustom;
 import swing.notification.Notification;
@@ -27,6 +26,7 @@ import static utils.Command.*;
 
 public class index extends JFrame {
     private JPanel main;
+    private JScrollPane jsp_txtarea_log;
     private JTextArea txtarea_log;
     private JTextField txt_uuid;
     private ProgressBarCustom pgb_cpu;
@@ -36,23 +36,26 @@ public class index extends JFrame {
     private ButtonCustom btn_process;
     private ButtonCustom btn_clipboard;
     private ButtonCustom btn_keylog;
+    private JScrollPane jsp_table;
     private JTable table;
     private JLabel lbl_uuid;
     private JLabel lbl_cpu;
     private JLabel lbl_ram;
     private JLabel lbl_disk;
     private JLabel lbl_ip;
+    private JLabel lbl_hostname;
     private JTextField txt_cpu;
     private JTextField txt_ram;
     private JTextField txt_disk;
     private JTextField txt_ip;
+    private JTextField txt_hostname;
     private JLabel lbl_usage_cpu;
     private JLabel lbl_usage_ram;
     private JLabel lbl_usage_disk;
     private JLabel lbl_client_monitor;
+    private JPanel header;
     private JPanel left;
     private JPanel right;
-    private JScrollPane jsp_table;
     private JPanel right_left;
     private JPanel right_right;
     private JPanel right_left_middle;
@@ -60,35 +63,34 @@ public class index extends JFrame {
     private JPanel right_right_top;
     private JPanel right_right_bottom;
     private JPanel right_right_middle;
-    private JScrollPane jsp_txtarea_log;
-    private JCheckBox toggle_monitor;
-    private JCheckBox toggle_usage;
+    private JPanel right_left_top;
+    private JPanel all;
     private JPanel monitor;
     private JPanel usage;
-    private JPanel right_left_top;
-    private JPanel header;
+    private JCheckBox toggle_monitor;
+    private JCheckBox toggle_usage;
     private JCheckBox toggle_all;
-    private JPanel all;
-    private JLabel lbl_hostname;
-    private JTextField txt_hostname;
 
-    private String currentClientId;
-    private static Admin admin;
-    private static Notification notification;
-    public static HashMap<String, Worker> workers = new HashMap<>();
-    private static DefaultTableModel defaultTableModel = new DefaultTableModel();
-    private ImageIcon loading;
-    private static final String DISCONNECT_MESSAGE_TEMPLATE = "Client [%s] has disconnected!";
-    private static final Object[] tableHeaders = {"Id", "Host Name", "Operating System", "Mac address", "Ip address"};
-    private static final String FETCH_WORKER = "fetch_worker";
-    private static final String MONITOR_WORKER = "monitor_worker";
-    private static final String SYSTEM_USAGE_WORKER = "system_usage_worker";
     private static final Integer INDEX_WIDTH = 1380;
     private static final Integer INDEX_HEIGHT = 960;
     private static final Integer CLIENT_MONITOR_WIDTH = 580;
     private static final Integer CLIENT_MONITOR_HEIGHT = 300;
     private static final Integer NOTIFICATION_SLEEP = 5000;
+
+    private static final Object[] tableHeaders = {"Id", "Host Name", "Operating System", "Mac address", "Ip address"};
+    private static final String DISCONNECT_MESSAGE_TEMPLATE = "Client [%s] has disconnected!";
+    public static final String SYSTEM_USAGE_WORKER = "system_usage_worker";
+    public static final String MONITOR_WORKER = "monitor_worker";
+    private static final String FETCH_WORKER = "fetch_worker";
+
+    private static Notification notification;
+    private static DefaultTableModel defaultTableModel = new DefaultTableModel();
     private static final Color DISABLE_COLOR = new Color(230, 230, 230);
+    private ImageIcon loading;
+
+    private static Admin admin;
+    private String currentClientId;
+    public static HashMap<String, Worker> workers = new HashMap<>();
 
     public index() {
         initComponent();
@@ -96,10 +98,14 @@ public class index extends JFrame {
         workers.put(FETCH_WORKER, new Worker(this::fetchTable));
         workers.put(MONITOR_WORKER, new Worker(this::fetchClientMonitor));
         workers.put(SYSTEM_USAGE_WORKER, new Worker(this::fetchClientSystemUsage));
+    }
 
+    @Override
+    public void setVisible(boolean b) {
         workers.get(FETCH_WORKER).start();
         workers.get(MONITOR_WORKER).start();
         workers.get(SYSTEM_USAGE_WORKER).start();
+        super.setVisible(b);
     }
 
     private void initComponent() {
@@ -139,9 +145,9 @@ public class index extends JFrame {
         this.txt_ram.setBorder(emptyBorder);
         this.txt_disk.setBorder(emptyBorder);
         this.txt_uuid.setBorder(emptyBorder);
+        this.txtarea_log.setBorder(emptyBorder);
         this.txt_hostname.setBorder(emptyBorder);
         this.jsp_txtarea_log.setBorder(emptyBorder);
-        this.txtarea_log.setBorder(emptyBorder);
         /**
          * Table config
          */
@@ -178,7 +184,7 @@ public class index extends JFrame {
                 if (JOptionPane.showConfirmDialog(null,
                         "Are you sure you want to exit?", "Confirm exit?",
                         JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                     workers.forEach((key, val) -> val.stop());
                     admin.onStop();
                 }
@@ -261,33 +267,33 @@ public class index extends JFrame {
     }
 
     private void toggleUsageOFF() {
+        workers.get(SYSTEM_USAGE_WORKER).suspend();
+        workers.get(SYSTEM_USAGE_WORKER).setStatus(false);
+        fetchClientSystemUsage(0, 0, 0);
         setToggleAll(false);
-        right_right_middle.setBackground(DISABLE_COLOR);
         pgb_cpu.setBackground(DISABLE_COLOR);
         pgb_disk.setBackground(DISABLE_COLOR);
         pgb_ram.setBackground(DISABLE_COLOR);
-        fetchClientSystemUsage(0, 0, 0);
-        workers.get(SYSTEM_USAGE_WORKER).suspend();
-        workers.get(SYSTEM_USAGE_WORKER).setStatus(false);
-        notification.showNotification("System usage stream stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
+        right_right_middle.setBackground(DISABLE_COLOR);
+        notification.showNotification("System usage has stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
     }
 
     private void toggleMonitorON() {
+        workers.get(MONITOR_WORKER).resume();
+        workers.get(MONITOR_WORKER).setStatus(true);
         lbl_client_monitor.setIcon(loading);
         right_left_middle.setBackground(Color.WHITE);
         lbl_client_monitor.setText(null);
-        workers.get(MONITOR_WORKER).resume();
-        workers.get(MONITOR_WORKER).setStatus(true);
     }
 
     private void toggleMonitorOFF() {
+        workers.get(MONITOR_WORKER).suspend();
+        workers.get(MONITOR_WORKER).setStatus(false);
         setToggleAll(false);
         lbl_client_monitor.setIcon(null);
         lbl_client_monitor.setText("OFF");
         right_left_middle.setBackground(DISABLE_COLOR);
-        workers.get(MONITOR_WORKER).suspend();
-        workers.get(MONITOR_WORKER).setStatus(false);
-        notification.showNotification("Monitor stream stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
+        notification.showNotification("Monitor has stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
     }
 
     private void toggleAllON() {
@@ -305,24 +311,16 @@ public class index extends JFrame {
     }
 
     public void fetchTable() {
-        while (true) {
-            console.log("[FETCH] Fetch table");
-            try {
-                (defaultTableModel = new DefaultTableModel()).setColumnIdentifiers(tableHeaders);
-                admin.getClients().forEach((key, value) -> {
-                    defaultTableModel.addRow(new Object[]{
-                            key,
-                            value.getHostName(),
-                            value.getOs(),
-                            value.getMAC_address(),
-                            value.getIp()});
-                });
-                table.setModel(defaultTableModel);
-                Thread.currentThread().sleep(5000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        (defaultTableModel = new DefaultTableModel()).setColumnIdentifiers(tableHeaders);
+        admin.getClients().forEach((key, value) -> {
+            defaultTableModel.addRow(new Object[]{
+                    key,
+                    value.getHostName(),
+                    value.getOs(),
+                    value.getMAC_address(),
+                    value.getIp()});
+        });
+        table.setModel(defaultTableModel);
     }
 
     public void fetchClientMonitor() {
@@ -332,7 +330,7 @@ public class index extends JFrame {
                 if (currentClientId != null) {
                     admin.onHandle(COMMAND_CLIENT_MONITOR);
                 }
-                Thread.currentThread().sleep(1000);
+                Thread.currentThread().sleep(1500);
             } catch (InterruptedException e) {
                 e.getStackTrace();
                 throw new RuntimeException(e);
@@ -356,7 +354,6 @@ public class index extends JFrame {
     }
 
     public void fetchClientMonitor(ImageIcon imageIcon) {
-        if(!workers.get(MONITOR_WORKER).getStatus()) return;
         lbl_client_monitor.setText(null);
         lbl_client_monitor.setBorder(null);
         lbl_client_monitor.setIcon(new ImageIcon(
@@ -368,7 +365,6 @@ public class index extends JFrame {
     }
 
     public void fetchClientSystemUsage(int cpu, int ram, int disk) {
-        if(!workers.get(SYSTEM_USAGE_WORKER).getStatus()) return;
         this.pgb_cpu.setValue(cpu);
         this.pgb_ram.setValue(ram);
         this.pgb_disk.setValue(disk);
@@ -395,7 +391,7 @@ public class index extends JFrame {
         txtarea_log.setText(null);
     }
 
-    public void showNotification(String message){
+    public void showNotification(String message) {
         notification.showNotification(message, NOTIFICATION_SLEEP, Notification.Type.INFO);
     }
 

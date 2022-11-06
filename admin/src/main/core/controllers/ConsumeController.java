@@ -5,6 +5,7 @@ import controllers.base.ConsumeExecutable;
 import models.SystemInfoModel;
 import org.json.JSONArray;
 import swing.ProcessDialog;
+import swing.index;
 import utils.JSON;
 
 import javax.imageio.ImageIO;
@@ -34,22 +35,22 @@ public class ConsumeController {
 
     private static void getScreen(JSON input, Admin admin) {
         try {
-            if (!input.get("form").equals(Admin.getGui().getCurrentClientId())) {
-                return;
-            }
+            if(!index.workers.get(index.MONITOR_WORKER).getStatus()) return;
+
+            if (!input.get("form").equals(Admin.getGui().getCurrentClientId())) return;
 
             JSONArray imageBuffer = new JSONArray(input.get("image"));
             int length = input.getInt("length");
-            byte[] arr = new byte[length];
+            byte[] bytes = new byte[length];
 
             for (int i = 0; i < length; i++) {
-                arr[i] = Byte.parseByte(imageBuffer.get(i).toString());
+                bytes[i] = Byte.parseByte(imageBuffer.get(i).toString());
             }
 
-            ByteArrayInputStream temp = new ByteArrayInputStream(ByteBuffer.wrap(arr).array());
-            BufferedImage image2 = ImageIO.read(ImageIO.createImageInputStream(temp));
-            ImageIcon temp1 = new ImageIcon(image2);
-            Admin.getGui().fetchClientMonitor(temp1);
+            ByteArrayInputStream stream = new ByteArrayInputStream(ByteBuffer.wrap(bytes).array());
+            BufferedImage image = ImageIO.read(ImageIO.createImageInputStream(stream));
+            ImageIcon imageIcon = new ImageIcon(image);
+            Admin.getGui().fetchClientMonitor(imageIcon);
         } catch (Exception e) {
 
         }
@@ -99,10 +100,12 @@ public class ConsumeController {
                     json.get("hostName")
             ));
         });
+        Admin.getGui().fetchTable();
     }
 
     private static void getMonitoring(JSON input, Admin admin) {
         try {
+            if(!index.workers.get(index.SYSTEM_USAGE_WORKER).getStatus()) return;
             if (!input.get("form").equals(Admin.getGui().getCurrentClientId())) {
                 return;
             }
