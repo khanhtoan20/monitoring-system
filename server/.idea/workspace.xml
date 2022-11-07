@@ -5,31 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b719cbe4-2846-4809-aa35-228517a1bec5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/core/admin/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/admin/Admin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../admin/src/main/core/controllers/ConsumeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/controllers/ConsumeController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../admin/src/main/core/controllers/ProduceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/controllers/ProduceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/core/swing/index.form" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/index.form" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/core/swing/index.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/index.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/src/main/core/utils/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/utils/Command.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/admin/Admin.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/admin/Admin.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index$7.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index$8.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index$9.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../admin/target/classes/swing/index.class" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/target/classes/swing/index.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../client/src/main/java/controllers/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/controllers/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/utils/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/utils/Command.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controllers/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Command.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Environment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Environment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/controllers/Controller.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controllers/Controller.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Environment.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/utils/Environment.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

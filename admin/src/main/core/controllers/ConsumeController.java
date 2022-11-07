@@ -23,17 +23,17 @@ public class ConsumeController {
     private static Map<String, ConsumeExecutable<JSON>> controller = new HashMap();
 
     public static void init() {
-        put(COMMAND_CLIENT_SYSTEM_USAGE, ConsumeController::getMonitoring);
+        put(COMMAND_CLIENT_SYSTEM_USAGE, ConsumeController::getClientSystemUsage);
+        put(COMMAND_CLIENT_MONITOR, ConsumeController::getClientMonitor);
         put(COMMAND_CLIENT_CLIPBOARD, ConsumeController::getClipboard);
         put(COMMAND_CLIENT_KEYLOGGER, ConsumeController::getKeylogger);
         put(COMMAND_GET_CLIENTS, ConsumeController::getAllClients);
         put(COMMAND_CLIENT_PROCESS, ConsumeController::getProcess);
-        put(COMMAND_CLIENT_MONITOR, ConsumeController::getScreen);
         put(COMMAND_NOTIFICATION, ConsumeController::notify);
-        put(COMMAND_SYNC, ConsumeController::synchronize);
+        put(COMMAND_SYNC, ConsumeController::getSync);
     }
 
-    private static void getScreen(JSON input, Admin admin) {
+    private static void getClientMonitor(JSON input, Admin admin) {
         try {
             if(!index.workers.get(index.MONITOR_WORKER).getStatus()) return;
 
@@ -62,7 +62,7 @@ public class ConsumeController {
         dialog.setVisible(true);
     }
 
-    private static void synchronize(JSON input, Admin admin) {
+    private static void getSync(JSON input, Admin admin) {
         Admin.getGui().sync();
         admin.resetClients();
         ConsumeController.getAllClients(input, admin);
@@ -103,7 +103,7 @@ public class ConsumeController {
         Admin.getGui().fetchTable();
     }
 
-    private static void getMonitoring(JSON input, Admin admin) {
+    private static void getClientSystemUsage(JSON input, Admin admin) {
         try {
             if(!index.workers.get(index.SYSTEM_USAGE_WORKER).getStatus()) return;
             if (!input.get("form").equals(Admin.getGui().getCurrentClientId())) {
