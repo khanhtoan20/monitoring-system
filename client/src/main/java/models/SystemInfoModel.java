@@ -120,7 +120,6 @@ public class SystemInfoModel {
         try {
             return Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor).toString();
         } catch (Exception e) {
-            e.printStackTrace();
             return UNKNOWN;
         }
     }
