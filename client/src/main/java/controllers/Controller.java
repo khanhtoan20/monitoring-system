@@ -86,6 +86,7 @@ public class Controller {
 
     private static String getClientMonitor(JSON input) {
         try {
+            System.out.println(input);
             isMonitoring.set(input.getBoolean("isMonitoring"));
             ADMIN_HOST = input.get("ipAddress");
             return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_ACK)

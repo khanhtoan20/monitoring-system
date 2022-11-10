@@ -56,11 +56,18 @@ public class Controller {
     }
 
     private static void getClientMonitor(JSON json, SocketModel sender) {
-        System.out.println(json);
+        System.out.println("BF"+json);
         if (isHost(sender.getUUID())) {
+            JSON oldJSON = new JSON(json.toString());
+            Server.getClientConnections().values().forEach(client -> {
+
+                client.onSend(oldJSON.put("isMonitoring", false).toString());
+            });
+            System.out.println("ISHOT "+json);
             onHostSend(sender, Server.getClientConnections().get(json.get(TO)), json.toString());
             return;
         }
+        System.out.println(json);
         json.put(FORM, sender.getUUID());
         Server.getHost().onSend(json.toString());
     }
