@@ -72,7 +72,13 @@ public class SystemInfoModel {
                 System.getenv("PROCESSOR_ARCHITECTURE")};
         return String.format("%s, %s, %s cores, %s threads", cpu[1], cpu[3], cpu[0], cpu[2]);
     }
-
+    public static String getIPHost(){
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (Exception e) {
+            return UNKNOWN;
+        }
+    }
     private String initIP() {
         try {
             return InetAddress.getLocalHost().getHostAddress();

@@ -9,10 +9,15 @@ import swing.index;
 import utils.JSON;
 import utils.console;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.HashMap;
@@ -39,6 +44,33 @@ public class Admin {
         clients = new HashMap<String, SystemInfoModel>();
         index.workers.put(FETCH_WORKER, new Worker(this::fetch));
         index.workers.put(CONSUMER_WORKER, new Worker(this::onConsume));
+
+        Thread handleStreamingServer = new Thread(() -> {
+            try {
+                while (true) {
+
+                    System.out.println("Start Server");
+                    ServerSocket soc = new ServerSocket(8888);
+                    Socket so = soc.accept();
+                    System.out.println(so.getInetAddress().getAddress());
+                    BufferedImage img = ImageIO.read(so.getInputStream());
+                    ImageIcon imageIcon = new ImageIcon(img);
+                    Admin.getGui().fetchClientMonitor(imageIcon);
+
+                    System.out.println("Start Server");
+                    soc.close();
+                    try {
+                        Thread.sleep(10);
+                    } catch (Exception e) {
+                    }
+
+
+                }
+            } catch (Exception e) {
+            }
+        });
+        handleStreamingServer.setDaemon(true);
+        handleStreamingServer.start();
     }
 
     public void resetClients() {

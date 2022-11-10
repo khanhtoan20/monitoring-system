@@ -12,4 +12,5 @@ public class Command {
     public static final String COMMAND_END_CLIENT_PROCESS = "end_client_process";
     public static final String COMMAND_NOTIFICATION = "notify";
     public static final String COMMAND_SHUTDOWN_CLIENT = "shutdown_client";
+    public static final String COMMAND_ACK = "ack";
 }

@@ -29,10 +29,14 @@ public class Controller {
         put(COMMAND_CLIENT_PROCESS, Controller::getProcess);
         put(COMMAND_SHUTDOWN_CLIENT, Controller::shutdown);
         put(COMMAND_NOTIFICATION, Controller::notify);
+        put(COMMAND_ACK, Controller::ack);
     }
 
     private static void shutdown(JSON json, SocketModel sender) {
         onHostSend(sender, Server.getClientConnections().get(json.get(TO)), json.toString());
+    }
+
+    private static void ack(JSON json, SocketModel sender) {
     }
 
     private static void notify(JSON json, SocketModel sender) {
@@ -52,8 +56,9 @@ public class Controller {
     }
 
     private static void getClientMonitor(JSON json, SocketModel sender) {
+        System.out.println(json);
         if (isHost(sender.getUUID())) {
-            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_CLIENT_MONITOR).json());
+            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), json.toString());
             return;
         }
         json.put(FORM, sender.getUUID());

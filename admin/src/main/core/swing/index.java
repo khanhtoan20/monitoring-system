@@ -71,6 +71,7 @@ public class index extends JFrame {
     private JCheckBox toggle_usage;
     private JCheckBox toggle_all;
 
+    public static boolean isMonitoring = false;
     private static final Integer INDEX_WIDTH = 1380;
     private static final Integer INDEX_HEIGHT = 960;
     private static final Integer CLIENT_MONITOR_WIDTH = 580;
@@ -279,16 +280,16 @@ public class index extends JFrame {
     }
 
     private void toggleMonitorON() {
-        workers.get(MONITOR_WORKER).resume();
-        workers.get(MONITOR_WORKER).setStatus(true);
+        isMonitoring = true;
+        fetchClientMonitor();
         lbl_client_monitor.setIcon(loading);
         right_left_middle.setBackground(Color.WHITE);
         lbl_client_monitor.setText(null);
     }
 
     private void toggleMonitorOFF() {
-        workers.get(MONITOR_WORKER).suspend();
-        workers.get(MONITOR_WORKER).setStatus(false);
+        isMonitoring = false;
+        fetchClientMonitor();
         setToggleAll(false);
         lbl_client_monitor.setIcon(null);
         lbl_client_monitor.setText("OFF");
@@ -324,18 +325,11 @@ public class index extends JFrame {
     }
 
     public void fetchClientMonitor() {
-        while (true) {
-            try {
-                console.log("[FETCH] Client monitor");
-                if (currentClientId != null) {
-                    admin.onHandle(COMMAND_CLIENT_MONITOR);
-                }
-                Thread.currentThread().sleep(1500);
-            } catch (InterruptedException e) {
-                e.getStackTrace();
-                throw new RuntimeException(e);
-            }
+        console.log("[FETCH] Client monitor");
+        if (currentClientId != null) {
+            admin.onHandle(COMMAND_CLIENT_MONITOR);
         }
+
     }
 
     public void fetchClientSystemUsage() {

