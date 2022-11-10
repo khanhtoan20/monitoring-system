@@ -31,7 +31,7 @@ public class Admin {
     private static final String FETCH_WORKER = "admin_fetch_worker";
 
     private HashMap clients;
-    private Socket connection;
+    public Socket connection;
     private BufferedReader scanner;
     private BufferedReader inputStream;
     private DataOutputStream outputStream;

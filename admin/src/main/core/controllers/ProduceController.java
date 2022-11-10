@@ -5,6 +5,8 @@ import controllers.base.ProduceExecutable;
 import models.MessageModel;
 import swing.index;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +30,9 @@ public class ProduceController {
         return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_PROCESS).json();
     }
 
-    private static String getClientMonitor(Admin admin) {
-        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_MONITOR).put("isMonitoring", index.isMonitoring).json();
+    private static String getClientMonitor(Admin admin) throws UnknownHostException {
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_MONITOR).put("isMonitoring", index.isMonitoring)
+                .put("ipAdress", InetAddress.getLocalHost().getHostAddress()).json();
     }
 
     private static String getClientSystemUsage(Admin admin) {
