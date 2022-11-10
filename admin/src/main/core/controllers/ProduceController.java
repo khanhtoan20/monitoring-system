@@ -32,7 +32,7 @@ public class ProduceController {
 
     private static String getClientMonitor(Admin admin) throws UnknownHostException {
         return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_MONITOR).put("isMonitoring", index.isMonitoring)
-                .put("ipAdress", InetAddress.getLocalHost().getHostAddress()).json();
+                .put("ipAddress", InetAddress.getLocalHost().getHostAddress()).json();
     }
 
     private static String getClientSystemUsage(Admin admin) {
