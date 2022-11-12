@@ -4,7 +4,6 @@ import controllers.Controller;
 import models.ClientSocketModel;
 import utils.console;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
@@ -22,6 +21,7 @@ public class Server {
 
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(DEFAULT_SERVER_PORT)) {
+            utils.Helper.registerServerConfig();
             console.info("Server is listening on port: " + DEFAULT_SERVER_PORT);
             while (true) {
                 Socket socket = serverSocket.accept();
@@ -30,7 +30,7 @@ public class Server {
                 clientConnections.put(newUser.getUUID(), newUser);
                 new Thread(newUser).start();
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             console.error(ex.getMessage());
         }
     }

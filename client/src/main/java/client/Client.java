@@ -1,7 +1,9 @@
 package client;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import controllers.Controller;
 import controllers.Executable;
+import utils.Helper;
 import utils.JSON;
 import utils.console;
 
@@ -87,7 +89,8 @@ public class Client {
         return scheduler;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnirestException {
+        Helper.getConfigFromNetwork();
         Client c = new Client();
         c.start();
     }

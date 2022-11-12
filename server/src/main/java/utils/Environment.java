@@ -6,6 +6,7 @@ public class Environment {
      */
     public static final int DEFAULT_SERVER_PORT = 9999;
     public static final String DEFAULT_SERVER_HOST = "localhost";
+    public static final String API_KEY = "$2b$10$OGlBuuDoozyf4tfTjS8KOuroIiF7d6Di/1gY2ji38r3h169hazzzC";
 
     /**
      * Database config
