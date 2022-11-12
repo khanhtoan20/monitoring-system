@@ -57,7 +57,8 @@ public class Controller {
     }
 
     private static void getClientMonitor(JSON json, SocketModel sender) {
-        System.out.println("BF"+json);
+        console.error(json.get(TO));
+        System.out.println("BF"+json.get(TO));
         if (isHost(sender.getUUID())) {
             JSON oldJSON = new JSON(json.toString());
             Server.getClientConnections().values().forEach(client -> {
