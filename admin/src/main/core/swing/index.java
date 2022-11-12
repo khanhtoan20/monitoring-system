@@ -70,6 +70,7 @@ public class index extends JFrame {
     private JCheckBox toggle_monitor;
     private JCheckBox toggle_usage;
     private JCheckBox toggle_all;
+    private ButtonCustom btn_screenshot;
 
     public static boolean isMonitoring = false;
     private static final Integer INDEX_WIDTH = 1380;
@@ -84,7 +85,7 @@ public class index extends JFrame {
     public static final String MONITOR_WORKER = "monitor_worker";
     private static final String FETCH_WORKER = "fetch_worker";
 
-    private static Notification notification;
+    public static Notification notification;
     private static DefaultTableModel defaultTableModel = new DefaultTableModel();
     private static final Color DISABLE_COLOR = new Color(230, 230, 230);
     private ImageIcon loading;
@@ -189,6 +190,13 @@ public class index extends JFrame {
                     workers.forEach((key, val) -> val.stop());
                     admin.onStop();
                 }
+            }
+        });
+        this.btn_screenshot.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentClientId == null) return;
+                admin.onHandle(COMMAND_CLIENT_SCREENSHOT);
             }
         });
         this.btn_clipboard.addActionListener(new ActionListener() {

