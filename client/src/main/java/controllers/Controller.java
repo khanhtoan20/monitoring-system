@@ -29,6 +29,7 @@ public class Controller {
     private static final String END_PROCESS_NOTIFICATION_TEMPLATE = "%s will be shutdown in %s minutes";
     private static final String NOTIFICATION_PROPERTY = "notification";
     private static final String COUNTDOWN_PROPERTY = "countdown";
+    private static String ADMIN_HOST ="";
     private static final String PID_PROPERTY = "pid";
     private static AtomicBoolean isMonitoring = new AtomicBoolean(false);
 
@@ -56,7 +57,7 @@ public class Controller {
                 while (isMonitoring.get()) {
                     Socket soc = null;
                     try {
-                        soc = new Socket(SystemInfoModel.getIPHost(), 8888);
+                        soc = new Socket(ADMIN_HOST, 8888);
                         BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
                         ByteArrayOutputStream ous = new ByteArrayOutputStream();
                         ImageIO.write(image, "png", ous);
@@ -85,7 +86,9 @@ public class Controller {
 
     private static String getClientMonitor(JSON input) {
         try {
+            System.out.println(input);
             isMonitoring.set(input.getBoolean("isMonitoring"));
+            ADMIN_HOST = input.get("ipAddress");
             return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_ACK)
                     .json();
         } catch (Exception e) {
