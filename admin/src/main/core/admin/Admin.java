@@ -6,6 +6,8 @@ import controllers.base.ProduceExecutable;
 import models.SystemInfoModel;
 import models.Worker;
 import swing.index;
+import utils.Environment;
+import utils.Helper;
 import utils.JSON;
 import utils.console;
 
@@ -165,6 +167,7 @@ public class Admin {
             @Override
             public void run() {
                 try {
+                    Helper.getConfigFromNetwork();
                     new index().setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
