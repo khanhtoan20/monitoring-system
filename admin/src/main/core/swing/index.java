@@ -72,8 +72,8 @@ public class index extends JFrame {
     private JCheckBox toggle_all;
     private ButtonCustom btn_screenshot;
 
-    public static boolean isMonitoring = false;
-    public static boolean isUseCamera = false;
+    public static volatile boolean isMonitoring = false;
+    public static volatile boolean isUseCamera = false;
     private static final Integer INDEX_WIDTH = 1380;
     private static final Integer INDEX_HEIGHT = 960;
     private static final Integer CLIENT_MONITOR_WIDTH = 580;
@@ -380,6 +380,7 @@ public class index extends JFrame {
     }
 
     public void fetchClientCamera(ImageIcon imageIcon) {
+        if(!isUseCamera) return;
         lbl_client_camera.setText(null);
         lbl_client_camera.setBorder(null);
         lbl_client_camera.setIcon(new ImageIcon(

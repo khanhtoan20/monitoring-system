@@ -57,6 +57,7 @@ public class Admin {
                     System.out.println(so.getInetAddress().getAddress());
                     BufferedImage img = ImageIO.read(so.getInputStream());
                     ImageIcon imageIcon = new ImageIcon(img);
+
                     Admin.getGui().fetchClientCamera(imageIcon);
 
                     System.out.println("Start Server");
