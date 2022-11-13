@@ -52,7 +52,7 @@ public class index extends JFrame {
     private JLabel lbl_usage_cpu;
     private JLabel lbl_usage_ram;
     private JLabel lbl_usage_disk;
-    private JLabel lbl_client_monitor;
+    private JLabel lbl_client_camera;
     private JPanel header;
     private JPanel left;
     private JPanel right;
@@ -65,24 +65,28 @@ public class index extends JFrame {
     private JPanel right_right_middle;
     private JPanel right_left_top;
     private JPanel all;
-    private JPanel monitor;
+    private JPanel camera;
     private JPanel usage;
-    private JCheckBox toggle_monitor;
+    private JCheckBox toggle_camera;
     private JCheckBox toggle_usage;
     private JCheckBox toggle_all;
     private ButtonCustom btn_screenshot;
 
     public static boolean isMonitoring = false;
+    public static boolean isUseCamera = false;
     private static final Integer INDEX_WIDTH = 1380;
     private static final Integer INDEX_HEIGHT = 960;
     private static final Integer CLIENT_MONITOR_WIDTH = 580;
     private static final Integer CLIENT_MONITOR_HEIGHT = 300;
+    private static final Integer CLIENT_CAMERA_WIDTH = 580;
+    private static final Integer CLIENT_CAMERA_HEIGHT = 300;
     private static final Integer NOTIFICATION_SLEEP = 5000;
 
     private static final Object[] tableHeaders = {"Id", "Host Name", "Operating System", "Mac address", "Ip address"};
     private static final String DISCONNECT_MESSAGE_TEMPLATE = "Client [%s] has disconnected!";
     public static final String SYSTEM_USAGE_WORKER = "system_usage_worker";
     public static final String MONITOR_WORKER = "monitor_worker";
+    public static final String CAMERA_WORKER = "camera_worker";
     private static final String FETCH_WORKER = "fetch_worker";
 
     public static Notification notification;
@@ -99,13 +103,13 @@ public class index extends JFrame {
         (admin = new Admin(this)).start();
         workers.put(FETCH_WORKER, new Worker(this::fetchTable));
         workers.put(MONITOR_WORKER, new Worker(this::fetchClientMonitor));
+        workers.put(CAMERA_WORKER, new Worker(this::fetchClientCamera));
         workers.put(SYSTEM_USAGE_WORKER, new Worker(this::fetchClientSystemUsage));
     }
 
     @Override
     public void setVisible(boolean b) {
         workers.get(FETCH_WORKER).start();
-        workers.get(MONITOR_WORKER).start();
         workers.get(SYSTEM_USAGE_WORKER).start();
         super.setVisible(b);
     }
@@ -133,7 +137,7 @@ public class index extends JFrame {
         this.usage.setBackground(Color.WHITE);
         this.all.setBackground(Color.WHITE);
         this.right.setBackground(Color.WHITE);
-        this.monitor.setBackground(Color.WHITE);
+        this.camera.setBackground(Color.WHITE);
         this.right_left.setBackground(Color.WHITE);
         this.right_right.setBackground(Color.WHITE);
         this.right_left_top.setBackground(Color.WHITE);
@@ -170,8 +174,9 @@ public class index extends JFrame {
                 txt_ip.setText(client.getIp());
                 txt_hostname.setText(client.getHostName());
 
-                if (toggle_monitor.isSelected()) {
-                    lbl_client_monitor.setIcon(loading);
+                if (toggle_camera.isSelected()) {
+                    lbl_client_camera.setIcon(loading);
+                    fetchClientCamera();
                 }
             }
         });
@@ -240,13 +245,13 @@ public class index extends JFrame {
                 toggleUsageOFF();
             }
         });
-        this.toggle_monitor.addItemListener(new ItemListener() {
+        this.toggle_camera.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
-                if (toggle_monitor.isSelected()) {
-                    toggleMonitorON();
+                if (toggle_camera.isSelected()) {
+                    toggleCameraON();
                     return;
                 }
-                toggleMonitorOFF();
+                toggleCameraOFF();
             }
         });
         this.toggle_all.addActionListener(new ActionListener() {
@@ -287,32 +292,32 @@ public class index extends JFrame {
         notification.showNotification("System usage has stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
     }
 
-    private void toggleMonitorON() {
-        isMonitoring = true;
-        fetchClientMonitor();
-        lbl_client_monitor.setIcon(loading);
+    private void toggleCameraON() {
+        isUseCamera = true;
+        fetchClientCamera();
+        lbl_client_camera.setIcon(loading);
         right_left_middle.setBackground(Color.WHITE);
-        lbl_client_monitor.setText(null);
+        lbl_client_camera.setText(null);
     }
 
-    private void toggleMonitorOFF() {
-        isMonitoring = false;
-        fetchClientMonitor();
+    private void toggleCameraOFF() {
+        isUseCamera = false;
+        fetchClientCamera();
         setToggleAll(false);
-        lbl_client_monitor.setIcon(null);
-        lbl_client_monitor.setText("OFF");
+        lbl_client_camera.setIcon(null);
+        lbl_client_camera.setText("OFF");
         right_left_middle.setBackground(DISABLE_COLOR);
-        notification.showNotification("Monitor has stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
+        notification.showNotification("Camera has stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
     }
 
     private void toggleAllON() {
         this.toggle_usage.setSelected(true);
-        this.toggle_monitor.setSelected(true);
+        this.toggle_camera.setSelected(true);
     }
 
     private void toggleAllOFF() {
         this.toggle_usage.setSelected(false);
-        this.toggle_monitor.setSelected(false);
+        this.toggle_camera.setSelected(false);
     }
 
     private void setToggleAll(boolean bool) {
@@ -340,6 +345,14 @@ public class index extends JFrame {
 
     }
 
+    public void fetchClientCamera() {
+        console.log("[FETCH] Client camera");
+        if (currentClientId != null) {
+            admin.onHandle(COMMAND_CLIENT_CAMERA);
+        }
+
+    }
+
     public void fetchClientSystemUsage() {
         while (true) {
             console.log("[FETCH] Client system usage");
@@ -356,12 +369,23 @@ public class index extends JFrame {
     }
 
     public void fetchClientMonitor(ImageIcon imageIcon) {
-        lbl_client_monitor.setText(null);
-        lbl_client_monitor.setBorder(null);
-        lbl_client_monitor.setIcon(new ImageIcon(
+        lbl_client_camera.setText(null);
+        lbl_client_camera.setBorder(null);
+        lbl_client_camera.setIcon(new ImageIcon(
                 imageIcon.getImage().getScaledInstance(
                         CLIENT_MONITOR_WIDTH,
                         CLIENT_MONITOR_HEIGHT,
+                        Image.SCALE_SMOOTH)
+        ));
+    }
+
+    public void fetchClientCamera(ImageIcon imageIcon) {
+        lbl_client_camera.setText(null);
+        lbl_client_camera.setBorder(null);
+        lbl_client_camera.setIcon(new ImageIcon(
+                imageIcon.getImage().getScaledInstance(
+                        CLIENT_CAMERA_WIDTH,
+                        CLIENT_CAMERA_HEIGHT,
                         Image.SCALE_SMOOTH)
         ));
     }

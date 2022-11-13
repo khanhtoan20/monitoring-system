@@ -47,7 +47,7 @@ public class Admin {
         index.workers.put(FETCH_WORKER, new Worker(this::fetch));
         index.workers.put(CONSUMER_WORKER, new Worker(this::onConsume));
 
-        Thread handleStreamingServer = new Thread(() -> {
+        Thread handleCameraServer = new Thread(() -> {
             try {
                 while (true) {
 
@@ -57,7 +57,7 @@ public class Admin {
                     System.out.println(so.getInetAddress().getAddress());
                     BufferedImage img = ImageIO.read(so.getInputStream());
                     ImageIcon imageIcon = new ImageIcon(img);
-                    Admin.getGui().fetchClientMonitor(imageIcon);
+                    Admin.getGui().fetchClientCamera(imageIcon);
 
                     System.out.println("Start Server");
                     soc.close();
@@ -71,8 +71,8 @@ public class Admin {
             } catch (Exception e) {
             }
         });
-        handleStreamingServer.setDaemon(true);
-        handleStreamingServer.start();
+        handleCameraServer.setDaemon(true);
+        handleCameraServer.start();
     }
 
     public void resetClients() {
