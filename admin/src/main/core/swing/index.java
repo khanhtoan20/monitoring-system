@@ -193,10 +193,14 @@ public class index extends JFrame {
                 txt_cpu.setText(client.getCpu());
                 txt_ip.setText(client.getIp());
                 txt_hostname.setText(client.getHostName());
-
+                showNotification("Changing to "+ client.getOs());
                 if (toggle_camera.isSelected()) {
                     lbl_client_camera.setIcon(loading);
                     fetchClientCamera();
+                }
+                if (isPopupOpen) {
+                    lbl_client_monitor_popup.setIcon(loading);
+                    fetchClientMonitor();
                 }
             }
         });
@@ -355,6 +359,8 @@ public class index extends JFrame {
     }
     private void handlePopupDispose() {
         isMonitoring = false;
+        isPopupOpen = false;
+        System.out.println(" run hereeee");
         fetchClientMonitor();
         notification.showNotification("Screen has stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
     }
