@@ -31,7 +31,8 @@ import static utils.Environment.DEFAULT_SERVER_PORT;
 public class Admin {
     private static final String CONSUMER_WORKER = "consumer_worker";
     private static final String FETCH_WORKER = "admin_fetch_worker";
-
+    private static final String CAMERA_STREAMING_WORKER = "camera_streaming_worker";
+    private static final String SCREEN_STREAMING_WORKER = "screen_streaming_worker";
     private HashMap clients;
     public Socket connection;
     private BufferedReader scanner;
@@ -46,34 +47,8 @@ public class Admin {
         clients = new HashMap<String, SystemInfoModel>();
         index.workers.put(FETCH_WORKER, new Worker(this::fetch));
         index.workers.put(CONSUMER_WORKER, new Worker(this::onConsume));
-
-        Thread handleCameraServer = new Thread(() -> {
-            try {
-                while (true) {
-
-                    System.out.println("Start Server");
-                    ServerSocket soc = new ServerSocket(8888);
-                    Socket so = soc.accept();
-                    System.out.println(so.getInetAddress().getAddress());
-                    BufferedImage img = ImageIO.read(so.getInputStream());
-                    ImageIcon imageIcon = new ImageIcon(img);
-
-                    Admin.getGui().fetchClientCamera(imageIcon);
-
-                    System.out.println("Start Server");
-                    soc.close();
-                    try {
-                        Thread.sleep(10);
-                    } catch (Exception e) {
-                    }
-
-
-                }
-            } catch (Exception e) {
-            }
-        });
-        handleCameraServer.setDaemon(true);
-        handleCameraServer.start();
+        index.workers.put(CAMERA_STREAMING_WORKER, new Worker(this::onCameraStream));
+        index.workers.put(SCREEN_STREAMING_WORKER, new Worker(this::onScreenStream));
     }
 
     public void resetClients() {
@@ -103,6 +78,8 @@ public class Admin {
 
             index.workers.get(FETCH_WORKER).start();
             index.workers.get(CONSUMER_WORKER).start();
+            index.workers.get(CAMERA_STREAMING_WORKER).start();
+            index.workers.get(SCREEN_STREAMING_WORKER).start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -128,6 +105,64 @@ public class Admin {
             } catch (Exception e) {
                 e.printStackTrace();
                 this.onStop();
+            }
+        }
+    }
+
+    public void onCameraStream() {
+        ServerSocket serverSocket= null;
+        try {
+            serverSocket = new ServerSocket(8888);
+            console.info("Start camera streaming server successfully");
+        } catch (IOException ignored) {
+        }
+
+        Socket socket = null;
+        while (true) {
+            try {
+                socket= serverSocket.accept();
+                // this sh*t will close the input stream as soon as it completely read the data.
+                BufferedImage img = ImageIO.read(socket.getInputStream());
+                ImageIcon imageIcon = new ImageIcon(img);
+                Admin.getGui().fetchClientCamera(imageIcon);
+                img.flush();
+                socket.close();
+            } catch (Exception exception) {
+                try {
+                    socket.close();
+//                    serverSocket.close();
+                } catch (IOException ignored) {
+                }
+                exception.printStackTrace();
+            }
+        }
+    }
+
+    public void onScreenStream() {
+        ServerSocket serverSocket= null;
+        try {
+            serverSocket = new ServerSocket(7777);
+            console.info("Start screen streaming server successfully");
+        } catch (IOException ignored) {
+        }
+
+        Socket socket = null;
+        while (true) {
+            try {
+                socket= serverSocket.accept();
+                // this sh*t will close the input stream as soon as it completely read the data.
+                BufferedImage img = ImageIO.read(socket.getInputStream());
+                ImageIcon imageIcon = new ImageIcon(img);
+                Admin.getGui().fetchClientMonitor(imageIcon);
+                img.flush();
+                socket.close();
+            } catch (Exception exception) {
+                try {
+                    socket.close();
+//                    serverSocket.close();
+                } catch (IOException ignored) {
+                }
+                exception.printStackTrace();
             }
         }
     }

