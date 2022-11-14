@@ -12,6 +12,7 @@ import utils.console;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -151,6 +152,10 @@ public class index extends JFrame {
          * Component config
          */
         lbl_client_monitor_popup = new JLabel();
+        lbl_client_monitor_popup.setMinimumSize(new Dimension(POPUP_WIDTH, POPUP_HEIGHT));
+        lbl_client_monitor_popup.setPreferredSize(new Dimension(POPUP_WIDTH, POPUP_HEIGHT));
+        lbl_client_monitor_popup.setMaximumSize(new Dimension(POPUP_WIDTH, POPUP_HEIGHT));
+        lbl_client_monitor_popup.setBorder(new LineBorder(Color.WHITE));
         this.header.setBackground(Color.WHITE);
         this.main.setBackground(Color.WHITE);
         this.left.setBackground(Color.WHITE);
@@ -162,7 +167,12 @@ public class index extends JFrame {
         this.right_right.setBackground(Color.WHITE);
         this.right_left_top.setBackground(Color.WHITE);
         this.right_right_top.setBackground(Color.WHITE);
+        //CAMERA
         this.right_left_middle.setBackground(Color.WHITE);
+        this.lbl_client_camera.setIcon(null);
+        this.lbl_client_camera.setText("OFF");
+        this.right_left_middle.setBackground(DISABLE_COLOR);
+        //
         this.right_left_bottom.setBackground(Color.WHITE);
         this.right_right_middle.setBackground(Color.WHITE);
         this.right_right_bottom.setBackground(Color.WHITE);
@@ -174,10 +184,12 @@ public class index extends JFrame {
         this.txtarea_log.setBorder(emptyBorder);
         this.txt_hostname.setBorder(emptyBorder);
         this.jsp_txtarea_log.setBorder(emptyBorder);
+
         /**
          * Table config
          */
         defaultTableModel.setColumnIdentifiers(tableHeaders);
+        this.table.setDefaultEditor(Object.class, null);
         this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
@@ -193,13 +205,13 @@ public class index extends JFrame {
                 txt_cpu.setText(client.getCpu());
                 txt_ip.setText(client.getIp());
                 txt_hostname.setText(client.getHostName());
-                showNotification("Changing to "+ client.getOs());
+                showNotification(client.getOs()+ " has been selected");
                 if (toggle_camera.isSelected()) {
                     lbl_client_camera.setIcon(loading);
                     fetchClientCamera();
                 }
                 if (isPopupOpen) {
-                    lbl_client_monitor_popup.setIcon(loading);
+                    lbl_client_monitor_popup.setIcon(new ImageIcon(loading.getImage().getScaledInstance(POPUP_WIDTH, POPUP_WIDTH, Image.SCALE_DEFAULT)));
                     fetchClientMonitor();
                 }
             }
@@ -266,10 +278,10 @@ public class index extends JFrame {
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); //this is your screen size
                 int x = (screenSize.width - popup.getSize().width) / 2; //These two lines are the dimensions
                 int y = (screenSize.height - popup.getSize().height) / 2;//of the center of the screen
-                popup.setLocation(x, y); //sets the location of the jframe
+                popup.setLocation(x, y); //sets the location of the jframe1
 
                 lbl_client_monitor_popup.setText(null);
-                lbl_client_monitor_popup.setBorder(null);
+//                lbl_client_monitor_popup.setBorder(null);
 
                 popup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 popup.add(lbl_client_monitor_popup);
@@ -309,7 +321,7 @@ public class index extends JFrame {
             public void itemStateChanged(ItemEvent e) {
                 if (currentClientId == null) {
                     showNotification(NO_USER_MESSAGE_TEMPLATE);
-                    toggle_usage.setSelected(false);
+                    toggle_usage.setSelected(true);
                     return;
                 }
                 ;
@@ -356,6 +368,7 @@ public class index extends JFrame {
          */
         ContextMenu.addDefaultContextMenu(txtarea_log);
         notification = new Notification(this, Notification.Type.WARNING, Notification.Location.TOP_CENTER);
+
     }
     private void handlePopupDispose() {
         isMonitoring = false;
@@ -386,6 +399,8 @@ public class index extends JFrame {
     }
 
     private void handlePopupOpen(){
+        lbl_client_monitor_popup.setIcon(loading);
+        lbl_client_monitor_popup.setIcon(new ImageIcon(loading.getImage().getScaledInstance(POPUP_WIDTH, POPUP_WIDTH, Image.SCALE_DEFAULT)));
         isMonitoring = true;
         fetchClientMonitor();
     }
