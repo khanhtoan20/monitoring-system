@@ -378,6 +378,7 @@ public class index extends JFrame {
         notification.showNotification("Screen has stopped", NOTIFICATION_SLEEP, Notification.Type.INFO);
     }
     private void toggleUsageON() {
+        if(toggle_camera.isSelected()) toggle_all.setSelected(true);
         workers.get(SYSTEM_USAGE_WORKER).resume();
         workers.get(SYSTEM_USAGE_WORKER).setStatus(true);
         right_right_middle.setBackground(Color.WHITE);
@@ -406,6 +407,7 @@ public class index extends JFrame {
     }
 
     private void toggleCameraON() {
+        if(toggle_usage.isSelected()) toggle_all.setSelected(true);
         isUseCamera = true;
         fetchClientCamera();
         lbl_client_camera.setIcon(loading);
