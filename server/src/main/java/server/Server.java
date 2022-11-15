@@ -21,7 +21,7 @@ public class Server {
 
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(DEFAULT_SERVER_PORT)) {
-//            utils.Helper.registerServerConfig();
+            utils.Helper.registerServerConfig();
             console.info("Server is listening on port: " + DEFAULT_SERVER_PORT);
             while (true) {
                 Socket socket = serverSocket.accept();
