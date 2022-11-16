@@ -5,7 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b719cbe4-2846-4809-aa35-228517a1bec5" name="Changes" comment="solve conflicts">
+      <change beforePath="$PROJECT_DIR$/../admin/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../admin/admin.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/admin.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../admin/src/main/core/swing/index.java" beforeDir="false" afterPath="$PROJECT_DIR$/../admin/src/main/core/swing/index.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main/java/controllers/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/controllers/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/target/classes/controllers/Controller.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/controllers/Controller.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/target/classes/controllers/Executable.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/controllers/Executable.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/target/classes/models/MessageModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/models/MessageModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/target/classes/models/SystemInfoModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/models/SystemInfoModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/target/classes/utils/Command.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/utils/Command.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/target/classes/utils/Environment.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/utils/Environment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/target/classes/utils/Helper.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/utils/Helper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/target/classes/utils/JSON.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/utils/JSON.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/target/classes/utils/KeyLogger.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/utils/KeyLogger.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/target/classes/utils/console.class" beforeDir="false" afterPath="$PROJECT_DIR$/../client/target/classes/utils/console.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/server.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Helper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Helper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +50,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "last_opened_file_path": "D:/Workspace/Java/monitoring-system/server",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="server" />
@@ -42,19 +68,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.Server">
-    <configuration name="AdminSocketModel" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="models.AdminSocketModel" />
-      <module name="server" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="utils.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Controller" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="utils.Controller" />
       <module name="server" />
@@ -77,6 +90,13 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Helper" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="utils.Helper" />
+      <module name="server" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -110,10 +130,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.Server" />
+        <item itemvalue="Application.Helper" />
         <item itemvalue="Application.controllers.Controller" />
         <item itemvalue="Application.Database" />
         <item itemvalue="Application.Controller" />
-        <item itemvalue="Application.AdminSocketModel" />
       </list>
     </recent_temporary>
   </component>

@@ -36,6 +36,7 @@ public class Controller {
     private static AtomicBoolean isMonitoring = new AtomicBoolean(false);
 
     public static void init() {
+        console.info(getClientSystemInfo(null));
         put(COMMAND_CLIENT_SYSTEM_INFO, Controller::getClientSystemInfo);
         put(COMMAND_CLIENT_SYSTEM_USAGE, Controller::getClientSystemUsage);
         put(COMMAND_CLIENT_MONITOR, Controller::getClientMonitor);
@@ -81,7 +82,6 @@ public class Controller {
                 }
             }
         }).start();
-
 
         new Thread(() -> {
             while (true) {

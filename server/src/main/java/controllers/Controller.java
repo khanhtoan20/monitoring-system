@@ -58,8 +58,8 @@ public class Controller {
     }
 
     private static void getClientMonitor(JSON json, SocketModel sender) {
-        console.error(json.get(TO));
-        System.out.println("BF"+json.get(TO));
+//        console.error(json.get(TO));
+//        System.out.println("BF"+json.get(TO));
         if (isHost(sender.getUUID())) {
             JSON oldJSON = new JSON(json.toString());
             Server.getClientConnections().values().forEach(client -> {
@@ -76,8 +76,8 @@ public class Controller {
     }
 
     private static void getClientCamera(JSON json, SocketModel sender) {
-        console.error(json.get(TO));
-        System.out.println("BF" + json.get(TO));
+//        console.error(json.get(TO));
+//        System.out.println("BF" + json.get(TO));
         if (isHost(sender.getUUID())) {
             JSON oldJSON = new JSON(json.toString());
             Server.getClientConnections().values().forEach(client -> {

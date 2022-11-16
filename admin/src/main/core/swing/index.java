@@ -531,6 +531,7 @@ public class index extends JFrame {
         pgb_ram.setValue(0);
         pgb_disk.setValue(0);
         txtarea_log.setText(null);
+        txt_hostname.setText(null);
     }
 
     public void showNotification(String message) {
